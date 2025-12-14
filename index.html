@@ -507,6 +507,7 @@
             margin: 2rem 0;
             overflow: hidden;
             border: 1px solid rgba(139, 92, 246, 0.3);
+            display: none; /* Hidden by default */
         }
         
         .admin-header {
@@ -593,6 +594,18 @@
             color: white;
         }
         
+        /* ===== Secret Admin Access Area ===== */
+        .secret-admin-area {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 50px;
+            opacity: 0;
+            cursor: pointer;
+            z-index: 1000;
+        }
+        
         /* ===== Footer ===== */
         .main-footer {
             background: rgba(15, 23, 42, 0.95);
@@ -643,6 +656,10 @@
         /* ===== Utility Classes ===== */
         .hidden {
             display: none !important;
+        }
+        
+        .visible {
+            display: block !important;
         }
         
         .text-center {
@@ -709,6 +726,10 @@
             .footer-content {
                 grid-template-columns: 1fr;
             }
+            
+            .admin-actions {
+                flex-direction: column;
+            }
         }
         
         @media (max-width: 480px) {
@@ -745,7 +766,7 @@
                     <div class="header-stats">
                         <div class="stat-item">
                             <span class="stat-number" id="total-attempts">0</span>
-                            <span class="stat-label">Attempts</span>
+                            <span class="stat-label">Total Attempts</span>
                         </div>
                     </div>
                 </div>
@@ -793,11 +814,13 @@
             <div class="container">
                 <div class="quiz-container">
                     <!-- Name Entry Screen -->
-                    <div id="name-entry" class="quiz-header">
-                        <h2>Begin Your Assessment</h2>
-                        <p>Enter your name to start the comprehensive EV technology evaluation.</p>
+                    <div id="name-entry">
+                        <div class="quiz-header">
+                            <h2>Begin Your Assessment</h2>
+                            <p>Enter your name to start the comprehensive EV technology evaluation.</p>
+                        </div>
                         
-                        <div style="max-width: 400px; margin: 2rem auto;">
+                        <div style="padding: 2rem;">
                             <div style="margin-bottom: 1.5rem;">
                                 <input type="text" id="player-name" placeholder="Enter your full name" 
                                        style="width: 100%; padding: 1rem 1.5rem; border-radius: var(--radius-sm); 
@@ -888,15 +911,18 @@
                             </div>
                             
                             <!-- Admin Panel (Hidden by default) -->
-                            <div id="admin-panel" class="admin-panel hidden">
+                            <div id="admin-panel" class="admin-panel">
                                 <div class="admin-header">
                                     <h3 style="margin: 0; color: white;"><i class="fas fa-chart-line"></i> Assessment Analytics</h3>
                                     <div class="admin-actions">
                                         <button class="admin-btn" onclick="exportScores()">
-                                            <i class="fas fa-download"></i> Export
+                                            <i class="fas fa-download"></i> Export Data
                                         </button>
                                         <button class="admin-btn" onclick="copyScores()">
-                                            <i class="fas fa-copy"></i> Copy
+                                            <i class="fas fa-copy"></i> Copy Scores
+                                        </button>
+                                        <button class="admin-btn" onclick="clearScores()" style="background: var(--danger);">
+                                            <i class="fas fa-trash"></i> Clear All
                                         </button>
                                     </div>
                                 </div>
@@ -909,7 +935,7 @@
                                                 <th>Name</th>
                                                 <th>Score</th>
                                                 <th>Percentage</th>
-                                                <th>Date</th>
+                                                <th>Date & Time</th>
                                             </tr>
                                         </thead>
                                         <tbody id="scores-table-body">
@@ -919,14 +945,9 @@
                                 </div>
                             </div>
                             
-                            <div style="margin-top: 2rem;">
-                                <button id="restart-btn" class="btn-submit" style="width: 100%; max-width: 300px;">
-                                    <i class="fas fa-redo"></i> Retake Assessment
-                                </button>
-                                
-                                <!-- Secret admin toggle (tap 5 times) -->
-                                <div id="secret-admin-area" style="height: 20px; margin-top: 1rem; opacity: 0.01;"></div>
-                            </div>
+                            <button id="restart-btn" class="btn-submit" style="width: 100%; max-width: 300px; margin-top: 2rem;">
+                                <i class="fas fa-redo"></i> Retake Assessment
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -968,6 +989,9 @@
                 </div>
             </div>
         </footer>
+        
+        <!-- Secret invisible area for admin access (top of screen) -->
+        <div class="secret-admin-area" id="secret-admin-area" title="Tap 5 times to unlock admin panel"></div>
     </div>
 
     <script>
@@ -1025,14 +1049,22 @@
                 this.bindEvents();
                 this.updateStats();
                 
-                // Secret admin unlock
+                // Secret admin unlock - tap top of screen 5 times
                 document.getElementById('secret-admin-area').addEventListener('click', () => this.handleSecretTap());
                 
                 // Check for admin in URL
                 const urlParams = new URLSearchParams(window.location.search);
-                if (urlParams.get('admin') === 'true') {
+                if (urlParams.get('admin') === 'true' || urlParams.get('admin') === 'manoj1680') {
                     this.unlockAdmin();
                 }
+                
+                // Also unlock if your name is entered
+                const playerNameInput = document.getElementById('player-name');
+                playerNameInput.addEventListener('input', (e) => {
+                    if (e.target.value.toLowerCase() === 'manoj' || e.target.value === 'manoj1680') {
+                        this.adminUnlocked = true;
+                    }
+                });
             }
             
             bindEvents() {
@@ -1061,296 +1093,5 @@
                     return;
                 }
                 
-                // Hide name entry, show quiz
-                document.getElementById('name-entry').classList.add('hidden');
-                document.getElementById('quiz-content').classList.remove('hidden');
-                
-                this.loadQuestion();
-            }
-            
-            loadQuestion() {
-                const question = this.quizData[this.currentQuestion];
-                
-                // Update UI
-                document.getElementById('question-number').textContent = question.id;
-                document.getElementById('question-text').textContent = question.question;
-                document.getElementById('current-section').textContent = question.section;
-                document.getElementById('current-question').textContent = `Question ${question.id} of 60`;
-                
-                // Update progress
-                const answered = this.userAnswers.filter(a => a !== null).length;
-                const progress = (answered / 60) * 100;
-                document.getElementById('progress-fill').style.width = `${progress}%`;
-                document.getElementById('progress-percent').textContent = `${Math.round(progress)}%`;
-                
-                // Load options
-                const optionsContainer = document.getElementById('options-container');
-                optionsContainer.innerHTML = '';
-                
-                const letters = ['A', 'B', 'C', 'D'];
-                question.options.forEach((option, index) => {
-                    const optionCard = document.createElement('div');
-                    optionCard.className = 'option-card';
-                    
-                    if (this.userAnswers[this.currentQuestion] === index) {
-                        optionCard.classList.add('selected');
-                    }
-                    
-                    optionCard.innerHTML = `
-                        <div class="option-letter">${letters[index]}</div>
-                        <div class="option-text">${option}</div>
-                    `;
-                    
-                    optionCard.addEventListener('click', () => this.selectOption(index));
-                    optionsContainer.appendChild(optionCard);
-                });
-                
-                // Update navigation buttons
-                document.getElementById('prev-btn').disabled = this.currentQuestion === 0;
-                
-                if (this.currentQuestion === this.quizData.length - 1) {
-                    document.getElementById('next-btn').innerHTML = '<i class="fas fa-paper-plane"></i> Submit Assessment';
-                    document.getElementById('next-btn').className = 'nav-btn btn-submit';
-                } else {
-                    document.getElementById('next-btn').innerHTML = 'Next <i class="fas fa-chevron-right"></i>';
-                    document.getElementById('next-btn').className = 'nav-btn btn-next';
-                }
-            }
-            
-            selectOption(index) {
-                // Remove selected from all options
-                document.querySelectorAll('.option-card').forEach(card => {
-                    card.classList.remove('selected');
-                });
-                
-                // Add selected to clicked option
-                document.querySelectorAll('.option-card')[index].classList.add('selected');
-                
-                // Save answer
-                this.userAnswers[this.currentQuestion] = index;
-                
-                // Update progress
-                const answered = this.userAnswers.filter(a => a !== null).length;
-                const progress = (answered / 60) * 100;
-                document.getElementById('progress-fill').style.width = `${progress}%`;
-                document.getElementById('progress-percent').textContent = `${Math.round(progress)}%`;
-            }
-            
-            prevQuestion() {
-                if (this.currentQuestion > 0) {
-                    this.currentQuestion--;
-                    this.loadQuestion();
-                }
-            }
-            
-            nextQuestion() {
-                if (this.currentQuestion === this.quizData.length - 1) {
-                    this.submitQuiz();
-                } else {
-                    this.currentQuestion++;
-                    this.loadQuestion();
-                }
-            }
-            
-            submitQuiz() {
-                // Calculate score
-                let score = 0;
-                this.quizData.forEach((q, i) => {
-                    if (this.userAnswers[i] === q.correct) score++;
-                });
-                
-                // Save score
-                this.saveScore(this.playerName, score);
-                
-                // Show results
-                document.getElementById('quiz-content').classList.add('hidden');
-                document.getElementById('results-container').classList.remove('hidden');
-                
-                // Update results display
-                const percentage = Math.round((score / 60) * 100);
-                document.getElementById('score-display').textContent = `${score}/60`;
-                document.getElementById('overall-score').textContent = `${percentage}%`;
-                document.getElementById('correct-answers').textContent = score;
-                document.getElementById('incorrect-answers').textContent = 60 - score;
-                
-                // Performance rating
-                let rating = '';
-                if (percentage >= 90) rating = 'Expert';
-                else if (percentage >= 80) rating = 'Advanced';
-                else if (percentage >= 70) rating = 'Proficient';
-                else if (percentage >= 60) rating = 'Competent';
-                else rating = 'Beginner';
-                
-                document.getElementById('performance-rating').textContent = rating;
-                
-                // Update stats
-                this.updateStats();
-                
-                // Show toast
-                this.showToast('Assessment submitted successfully!');
-            }
-            
-            saveScore(name, score) {
-                const newScore = {
-                    id: Date.now(),
-                    name: name,
-                    score: score,
-                    percentage: Math.round((score / 60) * 100),
-                    date: new Date().toLocaleDateString('en-US', { 
-                        year: 'numeric', 
-                        month: 'short', 
-                        day: 'numeric',
-                        hour: '2-digit',
-                        minute: '2-digit'
-                    }),
-                    timestamp: Date.now()
-                };
-                
-                this.scores.push(newScore);
-                localStorage.setItem('ev_quiz_scores', JSON.stringify(this.scores));
-                
-                // Update admin panel if visible
-                if (this.adminUnlocked) {
-                    this.updateAdminPanel();
-                }
-            }
-            
-            loadScores() {
-                const saved = localStorage.getItem('ev_quiz_scores');
-                return saved ? JSON.parse(saved) : [];
-            }
-            
-            updateStats() {
-                // Update total attempts
-                document.getElementById('total-attempts').textContent = this.scores.length;
-            }
-            
-            updateAdminPanel() {
-                const tableBody = document.getElementById('scores-table-body');
-                
-                // Sort by score descending
-                const sortedScores = [...this.scores].sort((a, b) => b.score - a.score);
-                
-                let html = '';
-                sortedScores.forEach((score, index) => {
-                    let rankClass = '';
-                    if (index === 0) rankClass = 'rank-1';
-                    else if (index === 1) rankClass = 'rank-2';
-                    else if (index === 2) rankClass = 'rank-3';
-                    
-                    html += `
-                        <tr>
-                            <td>
-                                <div class="rank-badge ${rankClass}">${index + 1}</div>
-                            </td>
-                            <td><strong>${score.name}</strong></td>
-                            <td>${score.score}/60</td>
-                            <td>${score.percentage}%</td>
-                            <td>${score.date}</td>
-                        </tr>
-                    `;
-                });
-                
-                tableBody.innerHTML = html;
-            }
-            
-            unlockAdmin() {
-                this.adminUnlocked = true;
-                document.getElementById('admin-panel').classList.remove('hidden');
-                this.updateAdminPanel();
-                this.showToast('Administrator mode activated');
-            }
-            
-            handleSecretTap() {
-                const now = Date.now();
-                if (now - this.lastTap > 1000) {
-                    this.tapCount = 0;
-                }
-                
-                this.tapCount++;
-                this.lastTap = now;
-                
-                if (this.tapCount >= 5) {
-                    this.unlockAdmin();
-                    this.tapCount = 0;
-                }
-            }
-            
-            restartQuiz() {
-                this.currentQuestion = 0;
-                this.userAnswers = new Array(60).fill(null);
-                
-                document.getElementById('results-container').classList.add('hidden');
-                document.getElementById('name-entry').classList.remove('hidden');
-                document.getElementById('player-name').value = '';
-                document.getElementById('player-name').focus();
-                
-                // Hide admin panel
-                document.getElementById('admin-panel').classList.add('hidden');
-                this.adminUnlocked = false;
-            }
-            
-            showToast(message) {
-                // Create toast element
-                const toast = document.createElement('div');
-                toast.style.cssText = `
-                    position: fixed;
-                    bottom: 20px;
-                    left: 50%;
-                    transform: translateX(-50%);
-                    background: var(--gradient);
-                    color: white;
-                    padding: 12px 24px;
-                    border-radius: var(--radius-sm);
-                    font-weight: 600;
-                    z-index: 1000;
-                    opacity: 0;
-                    transition: opacity 0.3s;
-                    box-shadow: var(--shadow-lg);
-                `;
-                toast.textContent = message;
-                document.body.appendChild(toast);
-                
-                // Show toast
-                setTimeout(() => toast.style.opacity = '1', 10);
-                
-                // Hide toast after 3 seconds
-                setTimeout(() => {
-                    toast.style.opacity = '0';
-                    setTimeout(() => toast.remove(), 300);
-                }, 3000);
-            }
-        }
-        
-        // Export functions for admin buttons
-        function exportScores() {
-            const quiz = window.evQuiz;
-            const dataStr = JSON.stringify(quiz.scores, null, 2);
-            const dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr);
-            
-            const linkElement = document.createElement('a');
-            linkElement.setAttribute('href', dataUri);
-            linkElement.setAttribute('download', `ev-assessment-scores-${new Date().toISOString().split('T')[0]}.json`);
-            linkElement.click();
-            
-            quiz.showToast('Data exported successfully');
-        }
-        
-        function copyScores() {
-            const quiz = window.evQuiz;
-            const text = quiz.scores.map(s => 
-                `${s.name}: ${s.score}/60 (${s.percentage}%) - ${s.date}`
-            ).join('\n');
-            
-            navigator.clipboard.writeText(text).then(() => {
-                quiz.showToast('Copied to clipboard');
-            });
-        }
-        
-        // Initialize quiz when page loads
-        document.addEventListener('DOMContentLoaded', () => {
-            window.evQuiz = new EVQuiz();
-        });
-    </script>
-</body>
-</html>
+                // Auto-unlock admin if your name
+                if (this.playerName.toLowerCase() === 'manoj' || this.playerName === 'manoj1680') {
