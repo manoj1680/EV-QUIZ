@@ -1,6 +1,6 @@
 # EV Technology Quiz
 
-🚗 **Live Quiz**: [Click Here](https://manoj1680.github.io/ev-quiz/)
+🚗 **Live Quiz**: [Click Here](https://manoj1680.github.io/EV-QUIZ/)
 
 Test your knowledge with this 60-question multiple-choice quiz on Electric Vehicle (EV) technology! Topics include power electronics, battery management, thermal systems, charging infrastructure, and powertrain components.
 
