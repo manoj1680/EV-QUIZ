@@ -594,6 +594,37 @@
             color: white;
         }
         
+        /* ===== Admin Access Button ===== */
+        #direct-admin-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            z-index: 9999;
+            box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+            border: 2px solid rgba(255,255,255,0.2);
+            display: none; /* Hidden by default */
+        }
+        
+        #direct-admin-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(139, 92, 246, 0.6);
+        }
+        
+        #direct-admin-btn.visible {
+            display: flex;
+        }
+        
         /* ===== Hidden/Visible Classes ===== */
         .hidden {
             display: none !important;
@@ -701,6 +732,13 @@
             .admin-actions {
                 flex-direction: column;
             }
+            
+            #direct-admin-btn {
+                bottom: 10px;
+                right: 10px;
+                padding: 10px 16px;
+                font-size: 0.8rem;
+            }
         }
         
         @media (max-width: 480px) {
@@ -717,6 +755,11 @@
             
             .score-display {
                 font-size: 3rem;
+            }
+            
+            #direct-admin-btn {
+                font-size: 0.75rem;
+                padding: 8px 12px;
             }
         }
     </style>
@@ -878,10 +921,10 @@
                                 </div>
                             </div>
                             
-                            <!-- Admin Panel -->
+                            <!-- Admin Panel - ONLY VISIBLE TO ADMIN -->
                             <div id="admin-panel" class="admin-panel">
                                 <div class="admin-header">
-                                    <h3 style="margin: 0; color: white;"><i class="fas fa-chart-line"></i> Assessment Analytics</h3>
+                                    <h3 style="margin: 0; color: white;"><i class="fas fa-chart-line"></i> Assessment Analytics (Admin Only)</h3>
                                     <div class="admin-actions">
                                         <button class="admin-btn" id="export-btn">
                                             <i class="fas fa-download"></i> Export Data
@@ -957,6 +1000,11 @@
                 </div>
             </div>
         </footer>
+        
+        <!-- Admin Button (Hidden by default) -->
+        <div id="direct-admin-btn" class="hidden">
+            <i class="fas fa-chart-bar"></i> View All Scores
+        </div>
         
         <!-- Secret invisible area for admin access -->
         <div class="secret-admin-area" id="secret-admin-area" style="position: fixed; top: 0; left: 0; width: 100%; height: 50px; opacity: 0.01; z-index: 1000;"></div>
@@ -1774,6 +1822,7 @@
             init() {
                 this.bindEvents();
                 this.updateStats();
+                this.createAdminAccessButton();
                 
                 // Secret admin unlock
                 document.getElementById('secret-admin-area').addEventListener('click', () => this.handleSecretTap());
@@ -1783,6 +1832,37 @@
                 if (urlParams.get('admin') === 'true' || urlParams.get('admin') === 'manoj1680') {
                     this.unlockAdmin();
                 }
+            }
+            
+            createAdminAccessButton() {
+                // Create admin button (hidden by default)
+                const adminBtn = document.getElementById('direct-admin-btn');
+                
+                adminBtn.onmouseover = () => {
+                    adminBtn.style.transform = 'translateY(-2px)';
+                    adminBtn.style.boxShadow = '0 6px 20px rgba(139, 92, 246, 0.6)';
+                };
+                
+                adminBtn.onmouseout = () => {
+                    adminBtn.style.transform = 'translateY(0)';
+                    adminBtn.style.boxShadow = '0 4px 15px rgba(139, 92, 246, 0.4)';
+                };
+                
+                adminBtn.onclick = () => {
+                    // Unlock admin mode
+                    this.unlockAdmin();
+                    
+                    // Skip to results page
+                    document.getElementById('name-entry').classList.add('hidden');
+                    document.getElementById('quiz-content').classList.add('hidden');
+                    document.getElementById('results-container').classList.remove('hidden');
+                    document.getElementById('admin-panel').style.display = 'block';
+                    
+                    // Update admin panel
+                    this.updateAdminPanel();
+                    
+                    this.showToast('Admin panel opened directly');
+                };
             }
             
             bindEvents() {
@@ -1819,6 +1899,8 @@
                 // Auto-unlock admin if your name
                 if (this.playerName.toLowerCase() === 'manoj' || this.playerName === 'manoj1680') {
                     this.adminUnlocked = true;
+                    // Show admin button
+                    document.getElementById('direct-admin-btn').classList.remove('hidden');
                 }
                 
                 // Hide name entry, show quiz
@@ -1943,10 +2025,13 @@
                 
                 document.getElementById('performance-rating').textContent = rating;
                 
-                // Show admin panel if unlocked
+                // Show admin panel ONLY if admin is unlocked
                 if (this.adminUnlocked) {
                     document.getElementById('admin-panel').style.display = 'block';
                     this.updateAdminPanel();
+                } else {
+                    // Regular users don't see admin panel
+                    document.getElementById('admin-panel').style.display = 'none';
                 }
                 
                 // Update stats
@@ -2024,6 +2109,10 @@
                 this.adminUnlocked = true;
                 document.getElementById('admin-panel').style.display = 'block';
                 this.updateAdminPanel();
+                
+                // Show admin button
+                document.getElementById('direct-admin-btn').classList.remove('hidden');
+                
                 this.showToast('Administrator mode activated');
             }
             
@@ -2093,9 +2182,8 @@
                 const toast = document.createElement('div');
                 toast.style.cssText = `
                     position: fixed;
-                    bottom: 20px;
-                    left: 50%;
-                    transform: translateX(-50%);
+                    bottom: 70px;
+                    right: 20px;
                     background: var(--gradient);
                     color: white;
                     padding: 12px 24px;
