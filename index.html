@@ -500,6 +500,169 @@
             color: var(--light);
         }
         
+        /* ===== Answer Review Section ===== */
+        .review-section {
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .review-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        
+        .review-filter {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .filter-btn {
+            padding: 0.5rem 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: var(--radius-sm);
+            color: var(--gray);
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 0.875rem;
+        }
+        
+        .filter-btn.active {
+            background: var(--gradient);
+            color: white;
+            border-color: var(--primary);
+        }
+        
+        .filter-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .review-card {
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: var(--radius-sm);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: var(--transition);
+        }
+        
+        .review-card.correct {
+            border-left: 4px solid var(--success);
+        }
+        
+        .review-card.incorrect {
+            border-left: 4px solid var(--danger);
+        }
+        
+        .review-card.skipped {
+            border-left: 4px solid var(--warning);
+        }
+        
+        .review-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+        
+        .status-correct {
+            background: rgba(16, 185, 129, 0.15);
+            color: var(--success);
+        }
+        
+        .status-incorrect {
+            background: rgba(239, 68, 68, 0.15);
+            color: var(--danger);
+        }
+        
+        .status-skipped {
+            background: rgba(245, 158, 11, 0.15);
+            color: var(--warning);
+        }
+        
+        .review-question {
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--light);
+        }
+        
+        .review-options {
+            margin: 1rem 0;
+        }
+        
+        .review-option {
+            padding: 0.75rem 1rem;
+            margin-bottom: 0.5rem;
+            border-radius: var(--radius-sm);
+            background: rgba(255, 255, 255, 0.03);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .review-option.user-answer {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+        
+        .review-option.correct-answer {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+        
+        .option-indicator {
+            width: 24px;
+            height: 24px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.75rem;
+            flex-shrink: 0;
+        }
+        
+        .indicator-user {
+            background: var(--danger);
+            color: white;
+        }
+        
+        .indicator-correct {
+            background: var(--success);
+            color: white;
+        }
+        
+        .indicator-normal {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--gray-light);
+        }
+        
+        .review-explanation {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: var(--radius-sm);
+            border-left: 3px solid var(--primary);
+        }
+        
+        .explanation-label {
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
         /* ===== Admin Panel ===== */
         .admin-panel {
             background: rgba(15, 23, 42, 0.95);
@@ -613,7 +776,7 @@
             gap: 8px;
             transition: all 0.3s;
             border: 2px solid rgba(255,255,255,0.2);
-            display: none; /* Hidden by default */
+            display: none;
         }
         
         #direct-admin-btn:hover {
@@ -725,6 +888,15 @@
                 justify-content: center;
             }
             
+            .review-controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .review-filter {
+                justify-content: center;
+            }
+            
             .footer-content {
                 grid-template-columns: 1fr;
             }
@@ -760,6 +932,10 @@
             #direct-admin-btn {
                 font-size: 0.75rem;
                 padding: 8px 12px;
+            }
+            
+            .review-card {
+                padding: 1rem;
             }
         }
     </style>
@@ -921,6 +1097,29 @@
                                 </div>
                             </div>
                             
+                            <!-- Answer Review Section -->
+                            <div class="review-section">
+                                <h3 style="margin-bottom: 1.5rem; text-align: center;">
+                                    <i class="fas fa-clipboard-check"></i> Detailed Answer Review
+                                </h3>
+                                
+                                <div class="review-controls">
+                                    <div class="review-filter">
+                                        <button class="filter-btn active" data-filter="all">All Questions</button>
+                                        <button class="filter-btn" data-filter="correct">Correct</button>
+                                        <button class="filter-btn" data-filter="incorrect">Incorrect</button>
+                                        <button class="filter-btn" data-filter="skipped">Skipped</button>
+                                    </div>
+                                    <div style="color: var(--gray); font-size: 0.875rem;">
+                                        Click on questions to expand/collapse
+                                    </div>
+                                </div>
+                                
+                                <div id="answer-review-container">
+                                    <!-- Answer review cards will be inserted here -->
+                                </div>
+                            </div>
+                            
                             <!-- Admin Panel - ONLY VISIBLE TO ADMIN -->
                             <div id="admin-panel" class="admin-panel">
                                 <div class="admin-header">
@@ -956,9 +1155,14 @@
                                 </div>
                             </div>
                             
-                            <button id="restart-btn" class="btn-submit" style="width: 100%; max-width: 300px; margin-top: 2rem;">
-                                <i class="fas fa-redo"></i> Retake Assessment
-                            </button>
+                            <div style="display: flex; gap: 1rem; justify-content: center; margin-top: 2rem; flex-wrap: wrap;">
+                                <button id="restart-btn" class="btn-submit" style="min-width: 200px;">
+                                    <i class="fas fa-redo"></i> Retake Assessment
+                                </button>
+                                <button id="download-review-btn" class="nav-btn btn-next" style="min-width: 200px;">
+                                    <i class="fas fa-download"></i> Download Review
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1011,7 +1215,7 @@
     </div>
 
     <script>
-        // Professional EV Quiz Application - ALL 60 QUESTIONS
+        // Professional EV Quiz Application - COMPLETE WITH ALL 60 QUESTIONS
         class EVQuiz {
             constructor() {
                 this.quizData = this.getQuizData();
@@ -1835,7 +2039,6 @@
             }
             
             createAdminAccessButton() {
-                // Create admin button (hidden by default)
                 const adminBtn = document.getElementById('direct-admin-btn');
                 
                 adminBtn.onmouseover = () => {
@@ -1849,18 +2052,12 @@
                 };
                 
                 adminBtn.onclick = () => {
-                    // Unlock admin mode
                     this.unlockAdmin();
-                    
-                    // Skip to results page
                     document.getElementById('name-entry').classList.add('hidden');
                     document.getElementById('quiz-content').classList.add('hidden');
                     document.getElementById('results-container').classList.remove('hidden');
                     document.getElementById('admin-panel').style.display = 'block';
-                    
-                    // Update admin panel
                     this.updateAdminPanel();
-                    
                     this.showToast('Admin panel opened directly');
                 };
             }
@@ -1881,10 +2078,22 @@
                 // Restart button
                 document.getElementById('restart-btn').addEventListener('click', () => this.restartQuiz());
                 
+                // Download review button
+                document.getElementById('download-review-btn').addEventListener('click', () => this.downloadReview());
+                
                 // Admin buttons
                 document.getElementById('export-btn').addEventListener('click', () => this.exportScores());
                 document.getElementById('copy-btn').addEventListener('click', () => this.copyScores());
                 document.getElementById('clear-btn').addEventListener('click', () => this.clearScores());
+                
+                // Review filter buttons
+                document.querySelectorAll('.filter-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                        e.target.classList.add('active');
+                        this.filterReview(e.target.dataset.filter);
+                    });
+                });
             }
             
             startQuiz() {
@@ -1899,11 +2108,9 @@
                 // Auto-unlock admin if your name
                 if (this.playerName.toLowerCase() === 'manoj' || this.playerName === 'manoj1680') {
                     this.adminUnlocked = true;
-                    // Show admin button
                     document.getElementById('direct-admin-btn').classList.remove('hidden');
                 }
                 
-                // Hide name entry, show quiz
                 document.getElementById('name-entry').classList.add('hidden');
                 document.getElementById('quiz-content').classList.remove('hidden');
                 
@@ -1960,18 +2167,13 @@
             }
             
             selectOption(index) {
-                // Remove selected from all options
                 document.querySelectorAll('.option-card').forEach(card => {
                     card.classList.remove('selected');
                 });
                 
-                // Add selected to clicked option
                 document.querySelectorAll('.option-card')[index].classList.add('selected');
-                
-                // Save answer
                 this.userAnswers[this.currentQuestion] = index;
                 
-                // Update progress
                 const answered = this.userAnswers.filter(a => a !== null).length;
                 const progress = (answered / 60) * 100;
                 document.getElementById('progress-fill').style.width = `${progress}%`;
@@ -2030,15 +2232,161 @@
                     document.getElementById('admin-panel').style.display = 'block';
                     this.updateAdminPanel();
                 } else {
-                    // Regular users don't see admin panel
                     document.getElementById('admin-panel').style.display = 'none';
                 }
+                
+                // Show answer review
+                this.showAnswerReview();
                 
                 // Update stats
                 this.updateStats();
                 
-                // Show toast
                 this.showToast('Assessment submitted successfully!');
+            }
+            
+            showAnswerReview() {
+                const container = document.getElementById('answer-review-container');
+                container.innerHTML = '';
+                
+                this.quizData.forEach((question, index) => {
+                    const userAnswer = this.userAnswers[index];
+                    const isCorrect = userAnswer === question.correct;
+                    const isSkipped = userAnswer === null;
+                    
+                    const reviewCard = document.createElement('div');
+                    reviewCard.className = `review-card ${isCorrect ? 'correct' : isSkipped ? 'skipped' : 'incorrect'}`;
+                    reviewCard.style.cursor = 'pointer';
+                    
+                    // Status badge
+                    let statusText = '';
+                    let statusClass = '';
+                    if (isCorrect) {
+                        statusText = '✓ Correct';
+                        statusClass = 'status-correct';
+                    } else if (isSkipped) {
+                        statusText = '↷ Skipped';
+                        statusClass = 'status-skipped';
+                    } else {
+                        statusText = '✗ Incorrect';
+                        statusClass = 'status-incorrect';
+                    }
+                    
+                    // Options with indicators
+                    let optionsHtml = '';
+                    const letters = ['A', 'B', 'C', 'D'];
+                    
+                    question.options.forEach((option, optIndex) => {
+                        let indicatorClass = 'indicator-normal';
+                        let optionClass = '';
+                        
+                        if (optIndex === userAnswer && !isSkipped) {
+                            indicatorClass = 'indicator-user';
+                            optionClass = 'user-answer';
+                        }
+                        
+                        if (optIndex === question.correct) {
+                            indicatorClass = 'indicator-correct';
+                            optionClass = 'correct-answer';
+                        }
+                        
+                        optionsHtml += `
+                            <div class="review-option ${optionClass}">
+                                <div class="option-indicator ${indicatorClass}">${letters[optIndex]}</div>
+                                <div>${option}</div>
+                            </div>
+                        `;
+                    });
+                    
+                    reviewCard.innerHTML = `
+                        <div class="review-status ${statusClass}">
+                            <i class="fas fa-${isCorrect ? 'check' : isSkipped ? 'minus' : 'times'}"></i>
+                            ${statusText} • Question ${index + 1} • ${question.section}
+                        </div>
+                        <div class="review-question">${question.question}</div>
+                        <div class="review-options">
+                            ${optionsHtml}
+                        </div>
+                        <div class="review-explanation hidden">
+                            <div class="explanation-label">
+                                <i class="fas fa-lightbulb"></i> Explanation
+                            </div>
+                            <div>${question.explanation}</div>
+                        </div>
+                    `;
+                    
+                    // Toggle explanation on click
+                    reviewCard.addEventListener('click', () => {
+                        const explanation = reviewCard.querySelector('.review-explanation');
+                        explanation.classList.toggle('hidden');
+                    });
+                    
+                    container.appendChild(reviewCard);
+                });
+            }
+            
+            filterReview(filter) {
+                const cards = document.querySelectorAll('.review-card');
+                
+                cards.forEach(card => {
+                    switch(filter) {
+                        case 'all':
+                            card.style.display = 'block';
+                            break;
+                        case 'correct':
+                            card.style.display = card.classList.contains('correct') ? 'block' : 'none';
+                            break;
+                        case 'incorrect':
+                            card.style.display = card.classList.contains('incorrect') ? 'block' : 'none';
+                            break;
+                        case 'skipped':
+                            card.style.display = card.classList.contains('skipped') ? 'block' : 'none';
+                            break;
+                    }
+                });
+            }
+            
+            downloadReview() {
+                let reviewText = `EV MASTERY ASSESSMENT REVIEW\n`;
+                reviewText += `Name: ${this.playerName}\n`;
+                reviewText += `Score: ${document.getElementById('score-display').textContent}\n`;
+                reviewText += `Percentage: ${document.getElementById('overall-score').textContent}\n`;
+                reviewText += `Date: ${new Date().toLocaleDateString()}\n\n`;
+                reviewText += `DETAILED ANSWER REVIEW:\n`;
+                reviewText += `=======================\n\n`;
+                
+                this.quizData.forEach((question, index) => {
+                    const userAnswer = this.userAnswers[index];
+                    const isCorrect = userAnswer === question.correct;
+                    const isSkipped = userAnswer === null;
+                    
+                    reviewText += `Question ${index + 1} (${question.section}):\n`;
+                    reviewText += `${question.question}\n\n`;
+                    
+                    const letters = ['A', 'B', 'C', 'D'];
+                    letters.forEach((letter, optIndex) => {
+                        let prefix = '  ';
+                        if (optIndex === userAnswer && !isSkipped) prefix = '❌ ';
+                        if (optIndex === question.correct) prefix = '✅ ';
+                        if (optIndex === userAnswer && optIndex === question.correct) prefix = '✅ ';
+                        reviewText += `${prefix}${letter}. ${question.options[optIndex]}\n`;
+                    });
+                    
+                    reviewText += `\nExplanation: ${question.explanation}\n`;
+                    reviewText += `Status: ${isCorrect ? 'CORRECT' : isSkipped ? 'SKIPPED' : 'INCORRECT'}\n`;
+                    reviewText += `\n${'='.repeat(50)}\n\n`;
+                });
+                
+                const blob = new Blob([reviewText], { type: 'text/plain' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `EV-Review-${this.playerName}-${new Date().toISOString().split('T')[0]}.txt`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                
+                this.showToast('Review downloaded successfully!');
             }
             
             saveScore(name, score) {
@@ -2060,7 +2408,6 @@
                 this.scores.push(newScore);
                 localStorage.setItem('ev_quiz_scores', JSON.stringify(this.scores));
                 
-                // Update admin panel if visible
                 if (this.adminUnlocked) {
                     this.updateAdminPanel();
                 }
@@ -2072,14 +2419,11 @@
             }
             
             updateStats() {
-                // Update total attempts
                 document.getElementById('total-attempts').textContent = this.scores.length;
             }
             
             updateAdminPanel() {
                 const tableBody = document.getElementById('scores-table-body');
-                
-                // Sort by score descending
                 const sortedScores = [...this.scores].sort((a, b) => b.score - a.score);
                 
                 let html = '';
@@ -2091,9 +2435,7 @@
                     
                     html += `
                         <tr>
-                            <td>
-                                <div class="rank-badge ${rankClass}">${index + 1}</div>
-                            </td>
+                            <td><div class="rank-badge ${rankClass}">${index + 1}</div></td>
                             <td><strong>${score.name}</strong></td>
                             <td>${score.score}/60</td>
                             <td>${score.percentage}%</td>
@@ -2109,10 +2451,7 @@
                 this.adminUnlocked = true;
                 document.getElementById('admin-panel').style.display = 'block';
                 this.updateAdminPanel();
-                
-                // Show admin button
                 document.getElementById('direct-admin-btn').classList.remove('hidden');
-                
                 this.showToast('Administrator mode activated');
             }
             
@@ -2134,12 +2473,10 @@
             exportScores() {
                 const dataStr = JSON.stringify(this.scores, null, 2);
                 const dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr);
-                
                 const linkElement = document.createElement('a');
                 linkElement.setAttribute('href', dataUri);
                 linkElement.setAttribute('download', `ev-assessment-scores-${new Date().toISOString().split('T')[0]}.json`);
                 linkElement.click();
-                
                 this.showToast('Data exported successfully');
             }
             
@@ -2166,19 +2503,15 @@
             restartQuiz() {
                 this.currentQuestion = 0;
                 this.userAnswers = new Array(60).fill(null);
-                
                 document.getElementById('results-container').classList.add('hidden');
                 document.getElementById('name-entry').classList.remove('hidden');
                 document.getElementById('player-name').value = '';
                 document.getElementById('player-name').focus();
-                
-                // Hide admin panel
                 document.getElementById('admin-panel').style.display = 'none';
                 this.adminUnlocked = false;
             }
             
             showToast(message) {
-                // Create toast element
                 const toast = document.createElement('div');
                 toast.style.cssText = `
                     position: fixed;
@@ -2197,10 +2530,8 @@
                 toast.textContent = message;
                 document.body.appendChild(toast);
                 
-                // Show toast
                 setTimeout(() => toast.style.opacity = '1', 10);
                 
-                // Hide toast after 3 seconds
                 setTimeout(() => {
                     toast.style.opacity = '0';
                     setTimeout(() => toast.remove(), 300);
