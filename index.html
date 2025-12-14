@@ -507,7 +507,7 @@
             margin: 2rem 0;
             overflow: hidden;
             border: 1px solid rgba(139, 92, 246, 0.3);
-            display: none; /* Hidden by default */
+            display: none;
         }
         
         .admin-header {
@@ -594,16 +594,13 @@
             color: white;
         }
         
-        /* ===== Secret Admin Access Area ===== */
-        .secret-admin-area {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 50px;
-            opacity: 0;
-            cursor: pointer;
-            z-index: 1000;
+        /* ===== Hidden/Visible Classes ===== */
+        .hidden {
+            display: none !important;
+        }
+        
+        .visible {
+            display: block !important;
         }
         
         /* ===== Footer ===== */
@@ -651,32 +648,6 @@
             border-top: 1px solid rgba(255, 255, 255, 0.1);
             color: var(--gray);
             font-size: 0.875rem;
-        }
-        
-        /* ===== Utility Classes ===== */
-        .hidden {
-            display: none !important;
-        }
-        
-        .visible {
-            display: block !important;
-        }
-        
-        .text-center {
-            text-align: center;
-        }
-        
-        .mt-1 { margin-top: 1rem; }
-        .mt-2 { margin-top: 2rem; }
-        .mt-3 { margin-top: 3rem; }
-        .mb-1 { margin-bottom: 1rem; }
-        .mb-2 { margin-bottom: 2rem; }
-        .mb-3 { margin-bottom: 3rem; }
-        
-        .glass {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
         }
         
         /* ===== Responsive Design ===== */
@@ -798,7 +769,6 @@
                     </div>
                     
                     <div class="hero-visual">
-                        <!-- Visual representation of quiz -->
                         <div style="text-align: center; position: relative; z-index: 1;">
                             <div style="font-size: 4rem; margin-bottom: 1rem;">🚗⚡</div>
                             <h3 style="color: white;">Industry-Standard Assessment</h3>
@@ -825,11 +795,9 @@
                                 <input type="text" id="player-name" placeholder="Enter your full name" 
                                        style="width: 100%; padding: 1rem 1.5rem; border-radius: var(--radius-sm); 
                                               background: rgba(255,255,255,0.1); border: 2px solid rgba(255,255,255,0.2); 
-                                              color: white; font-size: 1rem; transition: var(--transition);"
-                                       onfocus="this.style.borderColor='var(--primary)'; this.style.background='rgba(255,255,255,0.15)';"
-                                       onblur="this.style.borderColor='rgba(255,255,255,0.2)'; this.style.background='rgba(255,255,255,0.1)';">
+                                              color: white; font-size: 1rem; transition: var(--transition);">
                             </div>
-                            <button id="start-quiz-btn" class="btn-next" style="width: 100%;">
+                            <button id="start-quiz-btn" class="nav-btn btn-next" style="width: 100%;">
                                 <i class="fas fa-play-circle"></i> Start Assessment
                             </button>
                         </div>
@@ -855,7 +823,7 @@
                         <div class="question-card">
                             <div class="question-header">
                                 <div class="question-number" id="question-number">1</div>
-                                <div class="question-text" id="question-text"></div>
+                                <div class="question-text" id="question-text">Loading question...</div>
                             </div>
                             
                             <div class="options-grid" id="options-container">
@@ -910,18 +878,18 @@
                                 </div>
                             </div>
                             
-                            <!-- Admin Panel (Hidden by default) -->
+                            <!-- Admin Panel -->
                             <div id="admin-panel" class="admin-panel">
                                 <div class="admin-header">
                                     <h3 style="margin: 0; color: white;"><i class="fas fa-chart-line"></i> Assessment Analytics</h3>
                                     <div class="admin-actions">
-                                        <button class="admin-btn" onclick="exportScores()">
+                                        <button class="admin-btn" id="export-btn">
                                             <i class="fas fa-download"></i> Export Data
                                         </button>
-                                        <button class="admin-btn" onclick="copyScores()">
+                                        <button class="admin-btn" id="copy-btn">
                                             <i class="fas fa-copy"></i> Copy Scores
                                         </button>
-                                        <button class="admin-btn" onclick="clearScores()" style="background: var(--danger);">
+                                        <button class="admin-btn" id="clear-btn" style="background: var(--danger);">
                                             <i class="fas fa-trash"></i> Clear All
                                         </button>
                                     </div>
@@ -990,12 +958,12 @@
             </div>
         </footer>
         
-        <!-- Secret invisible area for admin access (top of screen) -->
-        <div class="secret-admin-area" id="secret-admin-area" title="Tap 5 times to unlock admin panel"></div>
+        <!-- Secret invisible area for admin access -->
+        <div class="secret-admin-area" id="secret-admin-area" style="position: fixed; top: 0; left: 0; width: 100%; height: 50px; opacity: 0.01; z-index: 1000;"></div>
     </div>
 
     <script>
-        // Professional EV Quiz Application
+        // Professional EV Quiz Application - ALL 60 QUESTIONS
         class EVQuiz {
             constructor() {
                 this.quizData = this.getQuizData();
@@ -1011,45 +979,803 @@
             }
             
             getQuizData() {
-                // Your 60 questions would go here
-                // For demo, creating sample questions
-                const questions = [];
-                const sections = [
-                    "Power Electronics & Thermal Management",
-                    "Battery Systems & Relays",
-                    "Alternator & Electrical Generation",
-                    "Starting System & Ignition",
-                    "EV Powertrain & Charging",
-                    "Power Flow & Control Units",
-                    "Advanced Topics & Integration"
-                ];
-                
-                for (let i = 0; i < 60; i++) {
-                    const sectionIndex = Math.floor(i / 9);
-                    questions.push({
-                        id: i + 1,
-                        question: `Question ${i + 1}: Which component is primarily responsible for ${['DC to AC conversion', 'battery thermal management', 'regenerative braking', 'power distribution'][i % 4]} in an EV system?`,
+                // COMPLETE 60 QUESTIONS
+                return [
+                    // Section 1: Power Electronics & Thermal Management (EV) - Q1 to Q8
+                    {
+                        id: 1,
+                        question: "What is the primary role of the Power Electronics (PC) system in an electric vehicle?",
                         options: [
-                            "Power Inverter Module",
-                            "Battery Management System",
-                            "Thermal Control Unit",
-                            "High Voltage Junction Box"
+                            "To manage battery thermal management",
+                            "To convert DC power into AC to drive the motor",
+                            "To distribute high-voltage power to auxiliary systems",
+                            "To control the regenerative braking energy recovery"
                         ],
-                        correct: i % 4,
-                        explanation: "Detailed explanation of the correct answer and its importance in EV systems.",
-                        section: sections[sectionIndex],
-                        difficulty: ['Easy', 'Medium', 'Hard'][i % 3]
-                    });
-                }
-                
-                return questions;
+                        correct: 1,
+                        explanation: "The Power Electronics system primarily converts DC battery power into AC to drive the electric motor.",
+                        section: "Power Electronics & Thermal Management"
+                    },
+                    {
+                        id: 2,
+                        question: "Which component in the cooling system is specifically responsible for storing coolant?",
+                        options: [
+                            "Radiator",
+                            "TCP (Electric Pump)",
+                            "Reservoir tank",
+                            "Cooling fan"
+                        ],
+                        correct: 2,
+                        explanation: "The reservoir tank (sometimes called expansion tank) stores coolant and allows for expansion and contraction.",
+                        section: "Power Electronics & Thermal Management"
+                    },
+                    {
+                        id: 3,
+                        question: "In thermal management, what distinguishes 'integrated mode' from 'separated mode'?",
+                        options: [
+                            "Integrated mode controls HVAC and battery independently; separated mode controls them together",
+                            "Integrated mode controls both HVAC and battery together; separated mode controls them independently",
+                            "Integrated mode is only for heating; separated mode is only for cooling",
+                            "Integrated mode uses air cooling; separated mode uses liquid cooling"
+                        ],
+                        correct: 1,
+                        explanation: "Integrated mode combines HVAC and battery thermal management for better efficiency, while separated mode treats them as separate systems.",
+                        section: "Power Electronics & Thermal Management"
+                    },
+                    {
+                        id: 4,
+                        question: "What is the primary purpose of the coolant heater in an EV during winter?",
+                        options: [
+                            "To warm the cabin for passenger comfort",
+                            "To maintain the battery at an optimal temperature for performance and charging",
+                            "To preheat the motor before starting",
+                            "To cool the power electronics during high load"
+                        ],
+                        correct: 1,
+                        explanation: "The coolant heater maintains battery temperature in cold conditions to ensure optimal performance and charging capability.",
+                        section: "Power Electronics & Thermal Management"
+                    },
+                    {
+                        id: 5,
+                        question: "Which safety feature is automatically activated in case of battery overheating?",
+                        options: [
+                            "Pre-charge relay engagement",
+                            "Cooling mode activation",
+                            "Main relay cut-off",
+                            "HVAC shutdown"
+                        ],
+                        correct: 1,
+                        explanation: "Cooling mode activation helps dissipate excess heat from the battery to prevent thermal runaway.",
+                        section: "Power Electronics & Thermal Management"
+                    },
+                    {
+                        id: 6,
+                        question: "What is a key advantage of an integrated thermal management system?",
+                        options: [
+                            "It requires less complex control algorithms",
+                            "It improves overall energy efficiency",
+                            "It allows independent operation in case of failure",
+                            "It uses separate coolant loops for each system"
+                        ],
+                        correct: 1,
+                        explanation: "Integrated thermal management systems improve overall energy efficiency by optimizing heat transfer between components.",
+                        section: "Power Electronics & Thermal Management"
+                    },
+                    {
+                        id: 7,
+                        question: "What does 'bootstrap safety' in battery systems primarily refer to?",
+                        options: [
+                            "Multi-layer safety devices to prevent thermal runaway",
+                            "A mechanical locking mechanism for high-voltage connectors",
+                            "A software protocol for secure communication",
+                            "An emergency braking system"
+                        ],
+                        correct: 0,
+                        explanation: "Bootstrap safety refers to multiple layers of safety devices designed to prevent thermal runaway in battery systems.",
+                        section: "Power Electronics & Thermal Management"
+                    },
+                    {
+                        id: 8,
+                        question: "How does the thermal management system directly impact battery life?",
+                        options: [
+                            "By increasing the voltage output during discharge",
+                            "By maintaining optimal temperature to prevent degradation",
+                            "By reducing the weight of the battery pack",
+                            "By allowing faster charging at all times"
+                        ],
+                        correct: 1,
+                        explanation: "Maintaining optimal temperature prevents battery degradation, extending its lifespan and maintaining performance.",
+                        section: "Power Electronics & Thermal Management"
+                    },
+                    // Section 2: Battery Systems & Relays - Q9 to Q16
+                    {
+                        id: 9,
+                        question: "What is the function of the Power Relay Assembly (PRA) in an EV?",
+                        options: [
+                            "To convert AC to DC for charging",
+                            "To control power supply and cut-off between the high-voltage battery and the system",
+                            "To manage the alternator output",
+                            "To regulate the motor speed"
+                        ],
+                        correct: 1,
+                        explanation: "The PRA controls power flow between the high-voltage battery and the rest of the EV system, including safety cut-off.",
+                        section: "Battery Systems & Relays"
+                    },
+                    {
+                        id: 10,
+                        question: "In what sequence do the relays operate during EV system startup?",
+                        options: [
+                            "Main relay → Pre-charge relay → PRA",
+                            "Pre-charge relay → Main relay → PRA",
+                            "PRA → Main relay → Pre-charge relay",
+                            "PRA → Pre-charge relay → Main relay"
+                        ],
+                        correct: 1,
+                        explanation: "The pre-charge relay activates first to gradually charge capacitors, then the main relay closes, followed by PRA engagement.",
+                        section: "Battery Systems & Relays"
+                    },
+                    {
+                        id: 11,
+                        question: "What is the specific purpose of the pre-charge relay?",
+                        options: [
+                            "To cut off high-voltage power in an emergency",
+                            "To gradually apply voltage to charge capacitors before the main relay closes",
+                            "To supply continuous power to the HVAC system",
+                            "To regulate alternator field current"
+                        ],
+                        correct: 1,
+                        explanation: "The pre-charge relay gradually applies voltage to charge capacitors, preventing high inrush current when the main relay closes.",
+                        section: "Battery Systems & Relays"
+                    },
+                    {
+                        id: 12,
+                        question: "Which relay is installed on both the positive and negative terminals of the high-voltage battery?",
+                        options: [
+                            "Pre-charge relay",
+                            "Starting relay",
+                            "Main relay",
+                            "Inhibitor relay"
+                        ],
+                        correct: 2,
+                        explanation: "Main relays are typically installed on both battery terminals for complete circuit isolation.",
+                        section: "Battery Systems & Relays"
+                    },
+                    {
+                        id: 13,
+                        question: "What could happen if the main relay fails to operate before system startup?",
+                        options: [
+                            "The battery may overcharge",
+                            "Sparks or arcing could occur during current cut-off",
+                            "The motor will run at reduced efficiency",
+                            "The cooling system will not activate"
+                        ],
+                        correct: 1,
+                        explanation: "Without proper relay operation, high inrush current can cause arcing or sparking when connections are made.",
+                        section: "Battery Systems & Relays"
+                    },
+                    {
+                        id: 14,
+                        question: "What does the PRA include for battery protection?",
+                        options: [
+                            "Fuses and contactors for overcurrent protection",
+                            "A built-in cooling circuit",
+                            "A voltage step-up converter",
+                            "A communication module for BMS"
+                        ],
+                        correct: 0,
+                        explanation: "The PRA includes fuses and contactors to protect against overcurrent conditions.",
+                        section: "Battery Systems & Relays"
+                    },
+                    {
+                        id: 15,
+                        question: "During discharge of a lead-acid battery, what happens to the sulfuric acid concentration?",
+                        options: [
+                            "It increases",
+                            "It decreases",
+                            "It remains constant",
+                            "It turns into water"
+                        ],
+                        correct: 1,
+                        explanation: "During discharge, sulfuric acid is consumed, decreasing its concentration in the electrolyte.",
+                        section: "Battery Systems & Relays"
+                    },
+                    {
+                        id: 16,
+                        question: "What does the Reserve Capacity (RC) rating of a battery indicate?",
+                        options: [
+                            "The current output at 0°F for 30 seconds",
+                            "The time the battery can supply essential loads if the charging system fails",
+                            "The total energy storage in watt-hours",
+                            "The number of charge-discharge cycles"
+                        ],
+                        correct: 1,
+                        explanation: "RC indicates how long (in minutes) a battery can supply essential electrical loads if the charging system fails.",
+                        section: "Battery Systems & Relays"
+                    },
+                    // Section 3: Alternator & Electrical Generation - Q17 to Q24
+                    {
+                        id: 17,
+                        question: "What principle does an alternator operate on?",
+                        options: [
+                            "Electrochemical reaction",
+                            "Electromagnetic induction",
+                            "Thermoelectric effect",
+                            "Piezoelectric effect"
+                        ],
+                        correct: 1,
+                        explanation: "Alternators generate electricity through electromagnetic induction.",
+                        section: "Alternator & Electrical Generation"
+                    },
+                    {
+                        id: 18,
+                        question: "Why are the three stator coils in an alternator placed 120 degrees apart?",
+                        options: [
+                            "To reduce magnetic interference",
+                            "To produce three-phase AC with a 120-degree phase difference",
+                            "To increase mechanical stability",
+                            "To allow single-phase output"
+                        ],
+                        correct: 1,
+                        explanation: "120-degree spacing creates three-phase AC power with balanced phase differences.",
+                        section: "Alternator & Electrical Generation"
+                    },
+                    {
+                        id: 19,
+                        question: "Which component inside the alternator converts AC to DC?",
+                        options: [
+                            "Regulator",
+                            "Stator",
+                            "Rotor",
+                            "Rectifier (diodes)"
+                        ],
+                        correct: 3,
+                        explanation: "The rectifier, consisting of diodes, converts AC to DC current.",
+                        section: "Alternator & Electrical Generation"
+                    },
+                    {
+                        id: 20,
+                        question: "What is the role of the voltage regulator in an alternator?",
+                        options: [
+                            "To convert AC to DC",
+                            "To control field current to maintain stable output voltage",
+                            "To cool the alternator windings",
+                            "To communicate with the transmission control unit"
+                        ],
+                        correct: 1,
+                        explanation: "The voltage regulator maintains stable output voltage by controlling the field current.",
+                        section: "Alternator & Electrical Generation"
+                    },
+                    {
+                        id: 21,
+                        question: "Which alternator terminal is always directly connected to the battery?",
+                        options: [
+                            "L terminal",
+                            "FR terminal",
+                            "B+ terminal",
+                            "IG terminal"
+                        ],
+                        correct: 2,
+                        explanation: "The B+ terminal is directly connected to the battery positive terminal.",
+                        section: "Alternator & Electrical Generation"
+                    },
+                    {
+                        id: 22,
+                        question: "If the voltage regulator fails, what is a likely consequence?",
+                        options: [
+                            "The battery may overcharge or discharge",
+                            "The starter motor will not disengage",
+                            "The HVAC system will stop working",
+                            "The inhibitor switch will malfunction"
+                        ],
+                        correct: 0,
+                        explanation: "A failed voltage regulator can cause overcharging (damaging battery) or undercharging (discharging battery).",
+                        section: "Alternator & Electrical Generation"
+                    },
+                    {
+                        id: 23,
+                        question: "What does the FR terminal on an alternator communicate to the ECU?",
+                        options: [
+                            "Battery voltage level",
+                            "Alternator load condition for idle speed control",
+                            "Field current status",
+                            "Rotational speed of the rotor"
+                        ],
+                        correct: 1,
+                        explanation: "The FR terminal communicates alternator load to the ECU for idle speed adjustment.",
+                        section: "Alternator & Electrical Generation"
+                    },
+                    {
+                        id: 24,
+                        question: "How does a three-phase full-wave rectifier improve efficiency?",
+                        options: [
+                            "By using only the positive half-cycles of AC",
+                            "By using both positive and negative half-cycles of AC",
+                            "By stepping up the voltage before rectification",
+                            "By incorporating a cooling mechanism"
+                        ],
+                        correct: 1,
+                        explanation: "Full-wave rectification uses both positive and negative half-cycles, improving efficiency and reducing ripple.",
+                        section: "Alternator & Electrical Generation"
+                    },
+                    // Section 4: Starting System & Ignition - Q25 to Q32
+                    {
+                        id: 25,
+                        question: "What is the correct sequence in a traditional key-type starting system?",
+                        options: [
+                            "Solenoid energizes → Ignition switch turned → Starter motor engages → Battery supplies current",
+                            "Battery supplies current → Ignition switch turned → Solenoid closes → Starter motor rotates",
+                            "Starter motor rotates → Solenoid engages → Ignition switch turned → Battery supplies current",
+                            "Ignition switch turned → Battery supplies current → Solenoid engages → Starter motor rotates"
+                        ],
+                        correct: 3,
+                        explanation: "The correct sequence is: ignition switch turned → battery supplies current → solenoid engages → starter motor rotates.",
+                        section: "Starting System & Ignition"
+                    },
+                    {
+                        id: 26,
+                        question: "In a push-button ignition system, what is required to start the engine?",
+                        options: [
+                            "Press the brake and push the button",
+                            "Press the clutch and push the button",
+                            "Turn the key to ON and push the button",
+                            "Press the accelerator and push the button"
+                        ],
+                        correct: 0,
+                        explanation: "In automatic transmission vehicles, pressing the brake pedal is required for safety.",
+                        section: "Starting System & Ignition"
+                    },
+                    {
+                        id: 27,
+                        question: "What is the function of the inhibitor switch in an automatic transmission vehicle?",
+                        options: [
+                            "To prevent battery overcharging",
+                            "To allow starting only in Park (P) or Neutral (N)",
+                            "To engage the starter relay when the ignition is on",
+                            "To cut off fuel supply in case of a crash"
+                        ],
+                        correct: 1,
+                        explanation: "The inhibitor switch prevents starting in gear for safety reasons.",
+                        section: "Starting System & Ignition"
+                    },
+                    {
+                        id: 28,
+                        question: "Which component in the starter motor reverses current direction in the armature windings?",
+                        options: [
+                            "Brushes",
+                            "Commutator",
+                            "Field coil",
+                            "Solenoid"
+                        ],
+                        correct: 1,
+                        explanation: "The commutator reverses current direction in the armature windings to maintain rotation.",
+                        section: "Starting System & Ignition"
+                    },
+                    {
+                        id: 29,
+                        question: "What happens if the brushes in a starter motor are worn too short?",
+                        options: [
+                            "The armature will overheat",
+                            "The field coil will demagnetize",
+                            "Current supply becomes unstable, reducing starting performance",
+                            "The inhibitor switch will not engage"
+                        ],
+                        correct: 2,
+                        explanation: "Worn brushes cause poor contact, leading to unstable current supply and reduced starting performance.",
+                        section: "Starting System & Ignition"
+                    },
+                    {
+                        id: 30,
+                        question: "What is the primary role of the field coil in a starter motor?",
+                        options: [
+                            "To rotate the armature",
+                            "To generate a magnetic field that interacts with the armature",
+                            "To supply current to the commutator",
+                            "To engage the pinion gear with the flywheel"
+                        ],
+                        correct: 1,
+                        explanation: "The field coil creates a magnetic field that interacts with the armature to produce torque.",
+                        section: "Starting System & Ignition"
+                    },
+                    {
+                        id: 31,
+                        question: "What audible indication suggests a relay is operating correctly?",
+                        options: [
+                            "Buzzing sound",
+                            "Humming sound",
+                            "Clicking sound",
+                            "Whirring sound"
+                        ],
+                        correct: 2,
+                        explanation: "A clear clicking sound indicates the relay coil is energizing and contacts are closing properly.",
+                        section: "Starting System & Ignition"
+                    },
+                    {
+                        id: 32,
+                        question: "In a starting relay, what do the two smaller terminals control?",
+                        options: [
+                            "High-current contacts",
+                            "The coil",
+                            "The inhibitor switch circuit",
+                            "The alternator field current"
+                        ],
+                        correct: 1,
+                        explanation: "The two smaller terminals control the relay coil which operates the high-current contacts.",
+                        section: "Starting System & Ignition"
+                    },
+                    // Section 5: EV Powertrain & Charging - Q33 to Q40
+                    {
+                        id: 33,
+                        question: "What is the primary function of the On-Board Charger (OBC)?",
+                        options: [
+                            "To convert DC to AC for the motor",
+                            "To convert AC from the grid to DC for the battery",
+                            "To manage power distribution to high-voltage components",
+                            "To control the motor speed"
+                        ],
+                        correct: 1,
+                        explanation: "The OBC converts AC from the grid to DC for battery charging.",
+                        section: "EV Powertrain & Charging"
+                    },
+                    {
+                        id: 34,
+                        question: "Which charging method bypasses the OBC?",
+                        options: [
+                            "Slow AC charging using a household outlet",
+                            "Fast DC charging",
+                            "AC charging with Type 1 connector",
+                            "AC charging with Type 2 connector"
+                        ],
+                        correct: 1,
+                        explanation: "DC fast charging bypasses the OBC and supplies DC directly to the battery.",
+                        section: "EV Powertrain & Charging"
+                    },
+                    {
+                        id: 35,
+                        question: "Which connector type is used for AC charging in North America and South Korea?",
+                        options: [
+                            "Type 1",
+                            "Type 2",
+                            "CHAdeMO",
+                            "CCS Combo"
+                        ],
+                        correct: 0,
+                        explanation: "Type 1 (J1772) is the standard AC connector in North America and South Korea.",
+                        section: "EV Powertrain & Charging"
+                    },
+                    {
+                        id: 36,
+                        question: "What does Control Pilot (CP) do in Type 1 and Type 2 charging?",
+                        options: [
+                            "Converts AC to DC",
+                            "Checks connection status and enables communication",
+                            "Provides high-voltage DC power",
+                            "Cools the battery during charging"
+                        ],
+                        correct: 1,
+                        explanation: "Control Pilot handles connection verification, communication, and charging parameter negotiation.",
+                        section: "EV Powertrain & Charging"
+                    },
+                    {
+                        id: 37,
+                        question: "Which fast-charging standard uses CAN communication and was developed in Japan?",
+                        options: [
+                            "CCS (Combined Charging System)",
+                            "Tesla Supercharger",
+                            "CHAdeMO",
+                            "GB/T"
+                        ],
+                        correct: 2,
+                        explanation: "CHAdeMO is a Japanese DC fast charging standard that uses CAN communication.",
+                        section: "EV Powertrain & Charging"
+                    },
+                    {
+                        id: 38,
+                        question: "What is a key disadvantage of fast charging compared to slow charging?",
+                        options: [
+                            "It puts more stress on the battery and generates more heat",
+                            "It is less convenient for long-distance driving",
+                            "It requires a Type 1 connector",
+                            "It cannot be used in cold weather"
+                        ],
+                        correct: 0,
+                        explanation: "Fast charging generates more heat and stress on battery cells, potentially reducing long-term battery life.",
+                        section: "EV Powertrain & Charging"
+                    },
+                    {
+                        id: 39,
+                        question: "What does 'bidirectional charging' enable in the latest OBC technology?",
+                        options: [
+                            "Charging from both AC and DC sources",
+                            "Vehicle-to-grid (V2G) power flow",
+                            "Simultaneous charging of multiple EVs",
+                            "Faster charging without thermal management"
+                        ],
+                        correct: 1,
+                        explanation: "Bidirectional charging allows power flow from vehicle to grid (V2G) or vehicle to home (V2H).",
+                        section: "EV Powertrain & Charging"
+                    },
+                    {
+                        id: 40,
+                        question: "Which motor type is mentioned as being mainly used in the latest EV technology?",
+                        options: [
+                            "Induction motor",
+                            "Brushed DC motor",
+                            "Permanent magnet synchronous motor (PMSM)",
+                            "Switched reluctance motor"
+                        ],
+                        correct: 2,
+                        explanation: "PMSM motors offer high efficiency and power density, making them popular in modern EVs.",
+                        section: "EV Powertrain & Charging"
+                    },
+                    // Section 6: Power Flow & Control Units - Q41 to Q48
+                    {
+                        id: 41,
+                        question: "In the power flow diagram, what does the green dotted line represent?",
+                        options: [
+                            "Mechanical driving force to the wheels",
+                            "Flow of AC power",
+                            "Flow of DC power",
+                            "Communication data between control units"
+                        ],
+                        correct: 3,
+                        explanation: "Green dotted lines typically represent communication/data flow between control units.",
+                        section: "Power Flow & Control Units"
+                    },
+                    {
+                        id: 42,
+                        question: "What is the role of the CPU (Electric Power Control Unit) in an EV?",
+                        options: [
+                            "Only controls the motor output",
+                            "Manages power flow between the battery and inverter and optimizes efficiency",
+                            "Converts DC to AC for the motor",
+                            "Distributes high-voltage power to components"
+                        ],
+                        correct: 1,
+                        explanation: "The CPU manages overall power flow and optimizes energy efficiency in the EV system.",
+                        section: "Power Flow & Control Units"
+                    },
+                    {
+                        id: 43,
+                        question: "What is a primary function of the High Voltage Junction Block?",
+                        options: [
+                            "To convert AC to DC",
+                            "To contain safety fuses and distribute power",
+                            "To cool the battery during fast charging",
+                            "To regulate motor speed"
+                        ],
+                        correct: 1,
+                        explanation: "The HVJB contains fuses and distributes high-voltage power to various components.",
+                        section: "Power Flow & Control Units"
+                    },
+                    {
+                        id: 44,
+                        question: "Which component acts as the 'brain' of the EV system according to the notes?",
+                        options: [
+                            "OBC",
+                            "CPU",
+                            "Inverter",
+                            "BMS"
+                        ],
+                        correct: 1,
+                        explanation: "The CPU (Electric Power Control Unit) acts as the central control unit or 'brain' of the EV.",
+                        section: "Power Flow & Control Units"
+                    },
+                    {
+                        id: 45,
+                        question: "What safety measure is taken for high-voltage parts in an EV?",
+                        options: [
+                            "They are painted blue",
+                            "They are marked with orange color",
+                            "They are insulated with rubber only",
+                            "They are located in the cabin"
+                        ],
+                        correct: 1,
+                        explanation: "High-voltage components are typically marked with orange for safety identification.",
+                        section: "Power Flow & Control Units"
+                    },
+                    {
+                        id: 46,
+                        question: "Before working on high-voltage components, what must be done first?",
+                        options: [
+                            "Activate the regenerative braking system",
+                            "Disconnect the battery connections",
+                            "Run the motor at low speed",
+                            "Engage the parking brake only"
+                        ],
+                        correct: 1,
+                        explanation: "Always disconnect high-voltage battery connections and verify zero voltage before working on HV components.",
+                        section: "Power Flow & Control Units"
+                    },
+                    {
+                        id: 47,
+                        question: "What does the reserve capacity (RC) of a battery indicate?",
+                        options: [
+                            "Cold cranking performance",
+                            "How long the battery can supply power if the charging system fails",
+                            "Total energy storage in ampere-hours",
+                            "The number of charge cycles"
+                        ],
+                        correct: 1,
+                        explanation: "RC indicates how long (in minutes) a battery can supply essential electrical loads without charging.",
+                        section: "Power Flow & Control Units"
+                    },
+                    {
+                        id: 48,
+                        question: "What is the purpose of the cooling fan in the thermal management system?",
+                        options: [
+                            "To circulate coolant",
+                            "To store coolant",
+                            "To dissipate heat from the radiator",
+                            "To cool the battery directly"
+                        ],
+                        correct: 2,
+                        explanation: "The cooling fan forces air through the radiator to dissipate heat from the coolant.",
+                        section: "Power Flow & Control Units"
+                    },
+                    // Section 7: Advanced Topics & Integration - Q49 to Q60
+                    {
+                        id: 49,
+                        question: "What does V2G technology enable?",
+                        options: [
+                            "Vehicle-to-grid power exchange",
+                            "Faster DC charging",
+                            "Improved regenerative braking",
+                            "Autonomous driving"
+                        ],
+                        correct: 0,
+                        explanation: "V2G (Vehicle-to-Grid) enables EVs to supply power back to the electrical grid.",
+                        section: "Advanced Topics & Integration"
+                    },
+                    {
+                        id: 50,
+                        question: "In an EV, what is the role of the reducer?",
+                        options: [
+                            "To convert electrical energy to mechanical energy",
+                            "To decrease motor speed and increase torque",
+                            "To manage power distribution",
+                            "To convert DC to AC"
+                        ],
+                        correct: 1,
+                        explanation: "The reducer (or reduction gear) reduces motor RPM while increasing torque to the wheels.",
+                        section: "Advanced Topics & Integration"
+                    },
+                    {
+                        id: 51,
+                        question: "What is a key challenge of integrated thermal management systems?",
+                        options: [
+                            "They require complex control algorithms",
+                            "They are less energy efficient",
+                            "They cannot operate independently in case of failure",
+                            "They are heavier than separated systems"
+                        ],
+                        correct: 0,
+                        explanation: "Integrated systems require sophisticated control algorithms to manage multiple thermal zones efficiently.",
+                        section: "Advanced Topics & Integration"
+                    },
+                    {
+                        id: 52,
+                        question: "What does the '60L' on a battery label refer to?",
+                        options: [
+                            "Cold cranking amps",
+                            "Reserve capacity in minutes",
+                            "Battery size and type standard",
+                            "Nominal voltage"
+                        ],
+                        correct: 2,
+                        explanation: "60L refers to battery group size and terminal configuration standard.",
+                        section: "Advanced Topics & Integration"
+                    },
+                    {
+                        id: 53,
+                        question: "What is the main advantage of using a relay in a starting circuit?",
+                        options: [
+                            "It increases voltage",
+                            "It allows a small current to control a large current",
+                            "It converts AC to DC",
+                            "It regulates battery temperature"
+                        ],
+                        correct: 1,
+                        explanation: "Relays allow low-current circuits to control high-current circuits, protecting switches and wiring.",
+                        section: "Advanced Topics & Integration"
+                    },
+                    {
+                        id: 54,
+                        question: "What is the chemical reaction during discharge in a lead-acid battery?",
+                        options: [
+                            "Pb + PbO₂ + 2H₂SO₄ → 2PbSO₄ + 2H₂O",
+                            "2PbSO₄ + 2H₂O → Pb + PbO₂ + 2H₂SO₄",
+                            "PbO₂ + H₂O → PbSO₄ + O₂",
+                            "Pb + H₂SO₄ → PbSO₄ + H₂"
+                        ],
+                        correct: 0,
+                        explanation: "During discharge, lead (Pb), lead dioxide (PbO₂), and sulfuric acid (H₂SO₄) produce lead sulfate (PbSO₄) and water.",
+                        section: "Advanced Topics & Integration"
+                    },
+                    {
+                        id: 55,
+                        question: "Which terminal on the alternator is connected to the charge warning lamp?",
+                        options: [
+                            "B+ terminal",
+                            "L terminal",
+                            "FR terminal",
+                            "S terminal"
+                        ],
+                        correct: 1,
+                        explanation: "The L terminal connects to the charge warning lamp on the dashboard.",
+                        section: "Advanced Topics & Integration"
+                    },
+                    {
+                        id: 56,
+                        question: "What is the purpose of the S terminal on an alternator?",
+                        options: [
+                            "To activate the voltage regulator",
+                            "To detect battery voltage for regulation",
+                            "To inform the ECU of alternator load",
+                            "To supply field current"
+                        ],
+                        correct: 1,
+                        explanation: "The S terminal senses battery voltage for accurate voltage regulation.",
+                        section: "Advanced Topics & Integration"
+                    },
+                    {
+                        id: 57,
+                        question: "In the context of EV charging, what does PLC stand for?",
+                        options: [
+                            "Power Line Communication",
+                            "Phase Load Control",
+                            "Primary Load Converter",
+                            "Pilot Link Check"
+                        ],
+                        correct: 0,
+                        explanation: "PLC enables communication over power lines between EV and charging station.",
+                        section: "Advanced Topics & Integration"
+                    },
+                    {
+                        id: 58,
+                        question: "What is a characteristic of Type 2 connectors?",
+                        options: [
+                            "They use single-phase AC 240V",
+                            "They are mainly used in North America",
+                            "They use three-phase AC 230V",
+                            "They are only for DC fast charging"
+                        ],
+                        correct: 2,
+                        explanation: "Type 2 (Mennekes) connectors support three-phase AC charging up to 43kW.",
+                        section: "Advanced Topics & Integration"
+                    },
+                    {
+                        id: 59,
+                        question: "What does the BMS (Battery Management System) primarily do?",
+                        options: [
+                            "Converts DC to AC",
+                            "Manages battery thermal and electrical conditions",
+                            "Controls the motor output",
+                            "Distributes high-voltage power"
+                        ],
+                        correct: 1,
+                        explanation: "BMS monitors and manages battery temperature, voltage, current, and state of charge for safety and longevity.",
+                        section: "Advanced Topics & Integration"
+                    },
+                    {
+                        id: 60,
+                        question: "What is a key safety feature of the High Voltage Junction Block?",
+                        options: [
+                            "It converts AC to DC",
+                            "It contains safety fuses to prevent overcurrent",
+                            "It cools the battery during fast charging",
+                            "It regulates motor speed"
+                        ],
+                        correct: 1,
+                        explanation: "The HVJB contains fuses that protect against overcurrent conditions in high-voltage circuits.",
+                        section: "Advanced Topics & Integration"
+                    }
+                ];
             }
             
             init() {
                 this.bindEvents();
                 this.updateStats();
                 
-                // Secret admin unlock - tap top of screen 5 times
+                // Secret admin unlock
                 document.getElementById('secret-admin-area').addEventListener('click', () => this.handleSecretTap());
                 
                 // Check for admin in URL
@@ -1057,14 +1783,6 @@
                 if (urlParams.get('admin') === 'true' || urlParams.get('admin') === 'manoj1680') {
                     this.unlockAdmin();
                 }
-                
-                // Also unlock if your name is entered
-                const playerNameInput = document.getElementById('player-name');
-                playerNameInput.addEventListener('input', (e) => {
-                    if (e.target.value.toLowerCase() === 'manoj' || e.target.value === 'manoj1680') {
-                        this.adminUnlocked = true;
-                    }
-                });
             }
             
             bindEvents() {
@@ -1082,6 +1800,11 @@
                 
                 // Restart button
                 document.getElementById('restart-btn').addEventListener('click', () => this.restartQuiz());
+                
+                // Admin buttons
+                document.getElementById('export-btn').addEventListener('click', () => this.exportScores());
+                document.getElementById('copy-btn').addEventListener('click', () => this.copyScores());
+                document.getElementById('clear-btn').addEventListener('click', () => this.clearScores());
             }
             
             startQuiz() {
@@ -1095,3 +1818,312 @@
                 
                 // Auto-unlock admin if your name
                 if (this.playerName.toLowerCase() === 'manoj' || this.playerName === 'manoj1680') {
+                    this.adminUnlocked = true;
+                }
+                
+                // Hide name entry, show quiz
+                document.getElementById('name-entry').classList.add('hidden');
+                document.getElementById('quiz-content').classList.remove('hidden');
+                
+                this.loadQuestion();
+            }
+            
+            loadQuestion() {
+                const question = this.quizData[this.currentQuestion];
+                
+                // Update UI
+                document.getElementById('question-number').textContent = question.id;
+                document.getElementById('question-text').textContent = question.question;
+                document.getElementById('current-section').textContent = question.section;
+                document.getElementById('current-question').textContent = `Question ${question.id} of 60`;
+                
+                // Update progress
+                const answered = this.userAnswers.filter(a => a !== null).length;
+                const progress = (answered / 60) * 100;
+                document.getElementById('progress-fill').style.width = `${progress}%`;
+                document.getElementById('progress-percent').textContent = `${Math.round(progress)}%`;
+                
+                // Load options
+                const optionsContainer = document.getElementById('options-container');
+                optionsContainer.innerHTML = '';
+                
+                const letters = ['A', 'B', 'C', 'D'];
+                question.options.forEach((option, index) => {
+                    const optionCard = document.createElement('div');
+                    optionCard.className = 'option-card';
+                    
+                    if (this.userAnswers[this.currentQuestion] === index) {
+                        optionCard.classList.add('selected');
+                    }
+                    
+                    optionCard.innerHTML = `
+                        <div class="option-letter">${letters[index]}</div>
+                        <div class="option-text">${option}</div>
+                    `;
+                    
+                    optionCard.addEventListener('click', () => this.selectOption(index));
+                    optionsContainer.appendChild(optionCard);
+                });
+                
+                // Update navigation buttons
+                document.getElementById('prev-btn').disabled = this.currentQuestion === 0;
+                
+                if (this.currentQuestion === this.quizData.length - 1) {
+                    document.getElementById('next-btn').innerHTML = '<i class="fas fa-paper-plane"></i> Submit Assessment';
+                    document.getElementById('next-btn').className = 'nav-btn btn-submit';
+                } else {
+                    document.getElementById('next-btn').innerHTML = 'Next <i class="fas fa-chevron-right"></i>';
+                    document.getElementById('next-btn').className = 'nav-btn btn-next';
+                }
+            }
+            
+            selectOption(index) {
+                // Remove selected from all options
+                document.querySelectorAll('.option-card').forEach(card => {
+                    card.classList.remove('selected');
+                });
+                
+                // Add selected to clicked option
+                document.querySelectorAll('.option-card')[index].classList.add('selected');
+                
+                // Save answer
+                this.userAnswers[this.currentQuestion] = index;
+                
+                // Update progress
+                const answered = this.userAnswers.filter(a => a !== null).length;
+                const progress = (answered / 60) * 100;
+                document.getElementById('progress-fill').style.width = `${progress}%`;
+                document.getElementById('progress-percent').textContent = `${Math.round(progress)}%`;
+            }
+            
+            prevQuestion() {
+                if (this.currentQuestion > 0) {
+                    this.currentQuestion--;
+                    this.loadQuestion();
+                }
+            }
+            
+            nextQuestion() {
+                if (this.currentQuestion === this.quizData.length - 1) {
+                    this.submitQuiz();
+                } else {
+                    this.currentQuestion++;
+                    this.loadQuestion();
+                }
+            }
+            
+            submitQuiz() {
+                // Calculate score
+                let score = 0;
+                this.quizData.forEach((q, i) => {
+                    if (this.userAnswers[i] === q.correct) score++;
+                });
+                
+                // Save score
+                this.saveScore(this.playerName, score);
+                
+                // Show results
+                document.getElementById('quiz-content').classList.add('hidden');
+                document.getElementById('results-container').classList.remove('hidden');
+                
+                // Update results display
+                const percentage = Math.round((score / 60) * 100);
+                document.getElementById('score-display').textContent = `${score}/60`;
+                document.getElementById('overall-score').textContent = `${percentage}%`;
+                document.getElementById('correct-answers').textContent = score;
+                document.getElementById('incorrect-answers').textContent = 60 - score;
+                
+                // Performance rating
+                let rating = '';
+                if (percentage >= 90) rating = 'Expert';
+                else if (percentage >= 80) rating = 'Advanced';
+                else if (percentage >= 70) rating = 'Proficient';
+                else if (percentage >= 60) rating = 'Competent';
+                else rating = 'Beginner';
+                
+                document.getElementById('performance-rating').textContent = rating;
+                
+                // Show admin panel if unlocked
+                if (this.adminUnlocked) {
+                    document.getElementById('admin-panel').style.display = 'block';
+                    this.updateAdminPanel();
+                }
+                
+                // Update stats
+                this.updateStats();
+                
+                // Show toast
+                this.showToast('Assessment submitted successfully!');
+            }
+            
+            saveScore(name, score) {
+                const newScore = {
+                    id: Date.now(),
+                    name: name,
+                    score: score,
+                    percentage: Math.round((score / 60) * 100),
+                    date: new Date().toLocaleDateString('en-US', { 
+                        year: 'numeric', 
+                        month: 'short', 
+                        day: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    }),
+                    timestamp: Date.now()
+                };
+                
+                this.scores.push(newScore);
+                localStorage.setItem('ev_quiz_scores', JSON.stringify(this.scores));
+                
+                // Update admin panel if visible
+                if (this.adminUnlocked) {
+                    this.updateAdminPanel();
+                }
+            }
+            
+            loadScores() {
+                const saved = localStorage.getItem('ev_quiz_scores');
+                return saved ? JSON.parse(saved) : [];
+            }
+            
+            updateStats() {
+                // Update total attempts
+                document.getElementById('total-attempts').textContent = this.scores.length;
+            }
+            
+            updateAdminPanel() {
+                const tableBody = document.getElementById('scores-table-body');
+                
+                // Sort by score descending
+                const sortedScores = [...this.scores].sort((a, b) => b.score - a.score);
+                
+                let html = '';
+                sortedScores.forEach((score, index) => {
+                    let rankClass = '';
+                    if (index === 0) rankClass = 'rank-1';
+                    else if (index === 1) rankClass = 'rank-2';
+                    else if (index === 2) rankClass = 'rank-3';
+                    
+                    html += `
+                        <tr>
+                            <td>
+                                <div class="rank-badge ${rankClass}">${index + 1}</div>
+                            </td>
+                            <td><strong>${score.name}</strong></td>
+                            <td>${score.score}/60</td>
+                            <td>${score.percentage}%</td>
+                            <td>${score.date}</td>
+                        </tr>
+                    `;
+                });
+                
+                tableBody.innerHTML = html;
+            }
+            
+            unlockAdmin() {
+                this.adminUnlocked = true;
+                document.getElementById('admin-panel').style.display = 'block';
+                this.updateAdminPanel();
+                this.showToast('Administrator mode activated');
+            }
+            
+            handleSecretTap() {
+                const now = Date.now();
+                if (now - this.lastTap > 1000) {
+                    this.tapCount = 0;
+                }
+                
+                this.tapCount++;
+                this.lastTap = now;
+                
+                if (this.tapCount >= 5) {
+                    this.unlockAdmin();
+                    this.tapCount = 0;
+                }
+            }
+            
+            exportScores() {
+                const dataStr = JSON.stringify(this.scores, null, 2);
+                const dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr);
+                
+                const linkElement = document.createElement('a');
+                linkElement.setAttribute('href', dataUri);
+                linkElement.setAttribute('download', `ev-assessment-scores-${new Date().toISOString().split('T')[0]}.json`);
+                linkElement.click();
+                
+                this.showToast('Data exported successfully');
+            }
+            
+            copyScores() {
+                const text = this.scores.map(s => 
+                    `${s.name}: ${s.score}/60 (${s.percentage}%) - ${s.date}`
+                ).join('\n');
+                
+                navigator.clipboard.writeText(text).then(() => {
+                    this.showToast('Copied to clipboard');
+                });
+            }
+            
+            clearScores() {
+                if (confirm('Are you sure you want to delete ALL scores? This cannot be undone.')) {
+                    localStorage.removeItem('ev_quiz_scores');
+                    this.scores = [];
+                    this.updateAdminPanel();
+                    this.updateStats();
+                    this.showToast('All scores cleared!');
+                }
+            }
+            
+            restartQuiz() {
+                this.currentQuestion = 0;
+                this.userAnswers = new Array(60).fill(null);
+                
+                document.getElementById('results-container').classList.add('hidden');
+                document.getElementById('name-entry').classList.remove('hidden');
+                document.getElementById('player-name').value = '';
+                document.getElementById('player-name').focus();
+                
+                // Hide admin panel
+                document.getElementById('admin-panel').style.display = 'none';
+                this.adminUnlocked = false;
+            }
+            
+            showToast(message) {
+                // Create toast element
+                const toast = document.createElement('div');
+                toast.style.cssText = `
+                    position: fixed;
+                    bottom: 20px;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    background: var(--gradient);
+                    color: white;
+                    padding: 12px 24px;
+                    border-radius: var(--radius-sm);
+                    font-weight: 600;
+                    z-index: 1000;
+                    opacity: 0;
+                    transition: opacity 0.3s;
+                    box-shadow: var(--shadow-lg);
+                `;
+                toast.textContent = message;
+                document.body.appendChild(toast);
+                
+                // Show toast
+                setTimeout(() => toast.style.opacity = '1', 10);
+                
+                // Hide toast after 3 seconds
+                setTimeout(() => {
+                    toast.style.opacity = '0';
+                    setTimeout(() => toast.remove(), 300);
+                }, 3000);
+            }
+        }
+        
+        // Initialize quiz when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            window.evQuiz = new EVQuiz();
+        });
+    </script>
+</body>
+</html>
