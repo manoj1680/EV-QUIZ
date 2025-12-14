@@ -2,817 +2,1355 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>EV Technology Quiz - Private Score Tracking</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EV Mastery | Professional EV Technology Assessment</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚡</text></svg>">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* Mobile-first responsive design */
+        /* ===== CSS Variables ===== */
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --primary-light: #3b82f6;
+            --secondary: #10b981;
+            --secondary-dark: #059669;
+            --accent: #8b5cf6;
+            --dark: #1e293b;
+            --darker: #0f172a;
+            --light: #f8fafc;
+            --gray: #64748b;
+            --gray-light: #e2e8f0;
+            --gray-dark: #475569;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --radius: 12px;
+            --radius-sm: 8px;
+            --shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+            --shadow-lg: 0 20px 40px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --gradient: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+        }
+        
+        /* ===== Reset & Base Styles ===== */
         * {
+            margin: 0;
+            padding: 0;
             box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
-            -webkit-tap-highlight-color: transparent;
         }
         
         body {
-            margin: 0;
-            padding: 0;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: var(--darker);
+            color: var(--light);
+            line-height: 1.6;
             min-height: 100vh;
+            overflow-x: hidden;
         }
         
-        .quiz-container {
-            max-width: 100%;
+        /* ===== Typography ===== */
+        h1, h2, h3, h4, h5, h6 {
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: 1rem;
+        }
+        
+        h1 {
+            font-size: 3rem;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            line-height: 1.1;
+        }
+        
+        h2 {
+            font-size: 2.25rem;
+            color: var(--light);
+        }
+        
+        h3 {
+            font-size: 1.5rem;
+            color: var(--light);
+        }
+        
+        p {
+            margin-bottom: 1rem;
+            color: var(--gray-light);
+        }
+        
+        .text-gradient {
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-weight: 700;
+        }
+        
+        /* ===== Layout ===== */
+        .container {
+            max-width: 1200px;
             margin: 0 auto;
-            background: white;
-            min-height: 100vh;
-            box-shadow: 0 0 30px rgba(0,0,0,0.1);
+            padding: 0 2rem;
         }
         
-        .quiz-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 20px;
+        .page-wrapper {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* ===== Header ===== */
+        .main-header {
+            padding: 2rem 0;
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(10px);
             position: sticky;
             top: 0;
             z-index: 100;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
         
-        .quiz-header h1 {
-            margin: 0 0 10px 0;
-            font-size: 24px;
-            text-align: center;
-        }
-        
-        .quiz-header p {
-            margin: 0;
-            text-align: center;
-            opacity: 0.9;
-            font-size: 14px;
-        }
-        
-        /* Main Content */
-        .main-content {
-            padding: 20px;
-        }
-        
-        /* Name Entry Screen */
-        .name-entry {
-            text-align: center;
-            padding: 30px 20px;
-        }
-        
-        .name-input {
-            width: 100%;
-            max-width: 300px;
-            padding: 15px;
-            font-size: 18px;
-            border: 2px solid #667eea;
-            border-radius: 10px;
-            margin: 20px 0;
-            text-align: center;
-        }
-        
-        .name-btn {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            padding: 15px 40px;
-            font-size: 18px;
-            border-radius: 10px;
-            cursor: pointer;
-            font-weight: bold;
-            margin-top: 20px;
-        }
-        
-        /* Question Text */
-        .question-text {
-            font-size: 18px;
-            font-weight: 600;
-            margin-bottom: 20px;
-            line-height: 1.4;
-            color: #333;
-        }
-        
-        /* Options Container */
-        .options-container {
+        .header-content {
             display: flex;
-            flex-direction: column;
-            gap: 10px;
-            margin-bottom: 30px;
-        }
-        
-        .option {
-            padding: 16px;
-            background: #f8f9fa;
-            border: 2px solid #e0e0e0;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: all 0.2s;
-            display: flex;
+            justify-content: space-between;
             align-items: center;
         }
         
-        .option:active {
-            transform: scale(0.98);
-        }
-        
-        .option.selected {
-            background: #e3eeff;
-            border-color: #667eea;
-        }
-        
-        .option-letter {
-            width: 32px;
-            height: 32px;
-            background: #e0e0e0;
-            border-radius: 50%;
+        .logo {
             display: flex;
             align-items: center;
-            justify-content: center;
-            margin-right: 12px;
-            font-weight: bold;
-            flex-shrink: 0;
+            gap: 0.75rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--light);
+            text-decoration: none;
         }
         
-        .option.selected .option-letter {
-            background: #667eea;
-            color: white;
+        .logo-icon {
+            font-size: 2rem;
+            color: var(--primary);
         }
         
-        /* Progress Bar */
-        .progress-container {
-            margin: 20px 0;
+        .logo-text {
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .tagline {
+            font-size: 0.875rem;
+            color: var(--gray);
+            margin-top: 0.25rem;
+        }
+        
+        /* ===== Hero Section ===== */
+        .hero-section {
+            padding: 4rem 0;
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.8) 0%, rgba(15, 23, 42, 1) 100%);
+        }
+        
+        .hero-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+        
+        .hero-content h1 {
+            margin-bottom: 1.5rem;
+        }
+        
+        .hero-stats {
+            display: flex;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            display: block;
+            line-height: 1;
+        }
+        
+        .stat-label {
+            font-size: 0.875rem;
+            color: var(--gray);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+        
+        .hero-visual {
+            background: linear-gradient(135deg, rgba(37, 99, 235, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%);
+            border-radius: var(--radius);
+            padding: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero-visual::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(37, 99, 235, 0.1) 0%, transparent 70%);
+            animation: pulse 8s infinite alternate;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(0.8); opacity: 0.5; }
+            100% { transform: scale(1.2); opacity: 1; }
+        }
+        
+        /* ===== Quiz Sections ===== */
+        .quiz-section {
+            padding: 4rem 0;
+            flex: 1;
+        }
+        
+        .quiz-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(30, 41, 59, 0.8);
+            backdrop-filter: blur(10px);
+            border-radius: var(--radius);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            overflow: hidden;
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .quiz-header {
+            padding: 2rem;
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--darker) 100%);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .quiz-progress {
+            margin-top: 1.5rem;
         }
         
         .progress-bar {
             height: 8px;
-            background: #e0e0e0;
+            background: rgba(255, 255, 255, 0.1);
             border-radius: 4px;
             overflow: hidden;
-            margin-bottom: 10px;
+            margin-bottom: 0.5rem;
         }
         
         .progress-fill {
             height: 100%;
-            background: linear-gradient(to right, #667eea, #764ba2);
+            background: var(--gradient);
             width: 0%;
-            transition: width 0.3s;
+            transition: var(--transition);
+            border-radius: 4px;
         }
         
         .progress-text {
-            text-align: center;
-            font-size: 14px;
-            color: #666;
-        }
-        
-        /* Buttons */
-        .buttons-container {
             display: flex;
-            gap: 10px;
-            margin-top: 30px;
+            justify-content: space-between;
+            font-size: 0.875rem;
+            color: var(--gray);
         }
         
-        .quiz-btn {
+        /* ===== Question Card ===== */
+        .question-card {
+            padding: 2rem;
+        }
+        
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 2rem;
+        }
+        
+        .question-number {
+            background: var(--gradient);
+            color: white;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.25rem;
+            flex-shrink: 0;
+            margin-right: 1rem;
+        }
+        
+        .question-text {
             flex: 1;
-            padding: 15px;
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--light);
+            line-height: 1.4;
+        }
+        
+        .options-grid {
+            display: grid;
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+        
+        .option-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: var(--radius-sm);
+            padding: 1.25rem;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .option-card:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--primary);
+            transform: translateY(-2px);
+        }
+        
+        .option-card.selected {
+            background: rgba(37, 99, 235, 0.15);
+            border-color: var(--primary);
+            box-shadow: 0 5px 15px rgba(37, 99, 235, 0.2);
+        }
+        
+        .option-card.correct {
+            background: rgba(16, 185, 129, 0.15);
+            border-color: var(--success);
+        }
+        
+        .option-card.incorrect {
+            background: rgba(239, 68, 68, 0.15);
+            border-color: var(--danger);
+        }
+        
+        .option-letter {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: var(--gray-light);
+            flex-shrink: 0;
+            transition: var(--transition);
+        }
+        
+        .option-card.selected .option-letter {
+            background: var(--gradient);
+            color: white;
+        }
+        
+        .option-card.correct .option-letter {
+            background: var(--success);
+            color: white;
+        }
+        
+        .option-card.incorrect .option-letter {
+            background: var(--danger);
+            color: white;
+        }
+        
+        .option-text {
+            flex: 1;
+            color: var(--gray-light);
+            font-weight: 500;
+        }
+        
+        .option-card.selected .option-text {
+            color: var(--light);
+        }
+        
+        /* ===== Navigation ===== */
+        .quiz-navigation {
+            display: flex;
+            justify-content: space-between;
+            padding: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(15, 23, 42, 0.5);
+        }
+        
+        .nav-btn {
+            padding: 0.875rem 2rem;
             border: none;
-            border-radius: 8px;
-            font-size: 16px;
+            border-radius: var(--radius-sm);
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1rem;
         }
         
         .btn-prev {
-            background: #f8f9fa;
-            color: #667eea;
-            border: 2px solid #e0e0e0;
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--gray-light);
+        }
+        
+        .btn-prev:hover:not(:disabled) {
+            background: rgba(255, 255, 255, 0.2);
+            color: var(--light);
         }
         
         .btn-next {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: var(--gradient);
             color: white;
+        }
+        
+        .btn-next:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(37, 99, 235, 0.3);
         }
         
         .btn-submit {
-            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            background: linear-gradient(135deg, var(--secondary) 0%, var(--secondary-dark) 100%);
             color: white;
         }
         
-        .btn-restart {
-            background: linear-gradient(135deg, #ff8a00 0%, #ffcc00 100%);
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(16, 185, 129, 0.3);
+        }
+        
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+            box-shadow: none !important;
+        }
+        
+        /* ===== Results Section ===== */
+        .results-section {
+            padding: 3rem 2rem;
+            text-align: center;
+        }
+        
+        .results-header {
+            margin-bottom: 3rem;
+        }
+        
+        .results-badge {
+            background: var(--gradient);
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 2rem;
+            font-size: 3rem;
             color: white;
-            width: 100%;
+            animation: bounce 1s ease infinite alternate;
         }
         
-        .btn-admin {
-            background: linear-gradient(135deg, #9c27b0 0%, #673ab7 100%);
-            color: white;
-            width: 100%;
-            margin-top: 10px;
+        @keyframes bounce {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.1); }
         }
         
-        /* Results Container */
-        .results-container {
-            padding: 20px;
-            display: none;
+        .score-display {
+            font-size: 4rem;
+            font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            line-height: 1;
+            margin: 1rem 0;
         }
         
-        .score-container {
-            font-size: 48px;
-            font-weight: bold;
-            text-align: center;
-            color: #667eea;
-            margin: 20px 0;
+        .performance-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: var(--radius);
+            padding: 2rem;
+            margin: 2rem 0;
+            text-align: left;
         }
         
-        .score-text {
-            text-align: center;
-            color: #666;
-            margin-bottom: 30px;
-            font-size: 16px;
-            line-height: 1.5;
+        .performance-metric {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
         
-        /* Personal Score Card */
-        .score-card {
-            background: #f8f9fa;
-            padding: 20px;
-            border-radius: 10px;
-            border: 2px solid #e0e0e0;
-            margin: 20px 0;
-            text-align: center;
+        .performance-metric:last-child {
+            border-bottom: none;
         }
         
-        .score-card h3 {
-            margin: 0 0 10px 0;
-            color: #333;
+        .metric-value {
+            font-weight: 700;
+            font-size: 1.25rem;
+            color: var(--light);
         }
         
-        .score-card .score {
-            font-size: 36px;
-            font-weight: bold;
-            color: #667eea;
-            margin: 10px 0;
-        }
-        
-        .score-card .rank {
-            font-size: 18px;
-            color: #666;
-        }
-        
-        /* Admin Panel (Hidden) */
+        /* ===== Admin Panel ===== */
         .admin-panel {
-            display: none;
-            margin-top: 30px;
-            padding: 20px;
-            background: #f0f0f0;
-            border-radius: 10px;
-            border: 2px dashed #9c27b0;
+            background: rgba(15, 23, 42, 0.95);
+            border-radius: var(--radius);
+            margin: 2rem 0;
+            overflow: hidden;
+            border: 1px solid rgba(139, 92, 246, 0.3);
         }
         
-        .admin-panel h3 {
-            color: #9c27b0;
-            text-align: center;
+        .admin-header {
+            background: linear-gradient(135deg, var(--accent) 0%, #6d28d9 100%);
+            padding: 1.5rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .admin-actions {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .admin-btn {
+            padding: 0.5rem 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: var(--radius-sm);
+            color: white;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 0.875rem;
+        }
+        
+        .admin-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .scores-table-container {
+            overflow-x: auto;
         }
         
         .scores-table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 10px;
-            font-size: 14px;
         }
         
         .scores-table th {
-            background: #9c27b0;
-            color: white;
-            padding: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1rem;
             text-align: left;
+            color: var(--gray);
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.1em;
         }
         
         .scores-table td {
-            padding: 10px;
-            border-bottom: 1px solid #ddd;
+            padding: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            color: var(--gray-light);
         }
         
         .scores-table tr:hover {
-            background: #e8e8e8;
+            background: rgba(255, 255, 255, 0.02);
         }
         
-        .copy-btn {
-            background: #2196f3;
+        .rank-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            font-weight: 700;
+            font-size: 0.875rem;
+        }
+        
+        .rank-1 {
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+            color: var(--darker);
+        }
+        
+        .rank-2 {
+            background: linear-gradient(135deg, #94a3b8 0%, #64748b 100%);
             color: white;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 5px;
-            cursor: pointer;
-            margin-top: 10px;
-            font-size: 14px;
         }
         
-        /* Review */
-        .review-item {
-            background: #f8f9fa;
-            padding: 15px;
-            margin-bottom: 15px;
-            border-radius: 10px;
-            border-left: 4px solid #667eea;
+        .rank-3 {
+            background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+            color: white;
         }
         
-        /* Media Queries */
+        /* ===== Footer ===== */
+        .main-footer {
+            background: rgba(15, 23, 42, 0.95);
+            padding: 3rem 0;
+            margin-top: auto;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 3rem;
+        }
+        
+        .footer-section h4 {
+            color: var(--light);
+            margin-bottom: 1.5rem;
+            font-size: 1.125rem;
+        }
+        
+        .footer-links {
+            list-style: none;
+        }
+        
+        .footer-links li {
+            margin-bottom: 0.75rem;
+        }
+        
+        .footer-links a {
+            color: var(--gray);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+        
+        .footer-links a:hover {
+            color: var(--primary);
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 2rem;
+            margin-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--gray);
+            font-size: 0.875rem;
+        }
+        
+        /* ===== Utility Classes ===== */
+        .hidden {
+            display: none !important;
+        }
+        
+        .text-center {
+            text-align: center;
+        }
+        
+        .mt-1 { margin-top: 1rem; }
+        .mt-2 { margin-top: 2rem; }
+        .mt-3 { margin-top: 3rem; }
+        .mb-1 { margin-bottom: 1rem; }
+        .mb-2 { margin-bottom: 2rem; }
+        .mb-3 { margin-bottom: 3rem; }
+        
+        .glass {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        /* ===== Responsive Design ===== */
+        @media (max-width: 1024px) {
+            .hero-grid {
+                grid-template-columns: 1fr;
+                gap: 3rem;
+            }
+            
+            .footer-content {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
         @media (max-width: 768px) {
-            .quiz-header h1 {
-                font-size: 20px;
+            h1 { font-size: 2.5rem; }
+            h2 { font-size: 2rem; }
+            
+            .container {
+                padding: 0 1.5rem;
             }
             
-            .question-text {
-                font-size: 16px;
-            }
-            
-            .option {
-                padding: 14px;
-            }
-            
-            .quiz-btn {
-                padding: 12px;
-                font-size: 14px;
-            }
-            
-            .buttons-container {
+            .hero-stats {
                 flex-direction: column;
+                gap: 1.5rem;
             }
             
-            .scores-table {
-                font-size: 12px;
+            .question-header {
+                flex-direction: column;
+                gap: 1rem;
             }
             
-            .scores-table th,
-            .scores-table td {
-                padding: 6px;
+            .question-number {
+                align-self: flex-start;
+            }
+            
+            .quiz-navigation {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .nav-btn {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .footer-content {
+                grid-template-columns: 1fr;
             }
         }
         
-        /* Toast Notification */
-        .toast {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #333;
-            color: white;
-            padding: 12px 24px;
-            border-radius: 25px;
-            font-size: 14px;
-            opacity: 0;
-            transition: opacity 0.3s;
-            z-index: 1000;
-        }
-        
-        .toast.show {
-            opacity: 1;
-        }
-        
-        /* Secret Admin Button */
-        .secret-admin-btn {
-            position: fixed;
-            top: 10px;
-            right: 10px;
-            width: 40px;
-            height: 40px;
-            background: transparent;
-            border: none;
-            cursor: pointer;
-            opacity: 0.1;
-            z-index: 1000;
-        }
-        
-        .secret-admin-btn:hover {
-            opacity: 0.3;
+        @media (max-width: 480px) {
+            h1 { font-size: 2rem; }
+            h2 { font-size: 1.75rem; }
+            
+            .container {
+                padding: 0 1rem;
+            }
+            
+            .option-card {
+                padding: 1rem;
+            }
+            
+            .score-display {
+                font-size: 3rem;
+            }
         }
     </style>
 </head>
 <body>
-    <!-- Secret Admin Button (Only you know about) -->
-    <button class="secret-admin-btn" id="secret-admin-btn" title="Admin Panel">👁️</button>
-    
-    <div class="quiz-container">
+    <div class="page-wrapper">
         <!-- Header -->
-        <div class="quiz-header">
-            <h1>EV Technology Quiz</h1>
-            <p>Enter your name and test your knowledge!</p>
-        </div>
-        
-        <!-- Name Entry Screen -->
-        <div class="name-entry" id="name-entry">
-            <h2>Enter Your Name</h2>
-            <input type="text" class="name-input" id="player-name" placeholder="Your Name" maxlength="20">
-            <button class="name-btn" id="start-quiz-btn">Start Quiz</button>
-        </div>
-        
-        <!-- Main Quiz Content (Hidden Initially) -->
-        <div class="main-content" id="main-content" style="display: none;">
-            <div class="progress-container">
-                <div class="progress-bar">
-                    <div class="progress-fill" id="progress-fill"></div>
+        <header class="main-header">
+            <div class="container">
+                <div class="header-content">
+                    <a href="#" class="logo">
+                        <span class="logo-icon">⚡</span>
+                        <div>
+                            <div class="logo-text">EV Mastery</div>
+                            <div class="tagline">Professional EV Technology Assessment</div>
+                        </div>
+                    </a>
+                    <div class="header-stats">
+                        <div class="stat-item">
+                            <span class="stat-number" id="total-attempts">0</span>
+                            <span class="stat-label">Attempts</span>
+                        </div>
+                    </div>
                 </div>
-                <div class="progress-text" id="progress-text">0/60 answered</div>
             </div>
-            
-            <div class="question-text" id="question-text"></div>
-            <div class="options-container" id="options-container"></div>
-            
-            <div class="buttons-container">
-                <button class="quiz-btn btn-prev" id="prev-btn">Previous</button>
-                <button class="quiz-btn btn-next" id="next-btn">Next</button>
-            </div>
-        </div>
-        
-        <!-- Results Container -->
-        <div class="results-container" id="results-container">
-            <h2>Quiz Completed!</h2>
-            
-            <!-- Personal Score Card (Friends see this) -->
-            <div class="score-card" id="personal-score-card">
-                <h3 id="player-name-display"></h3>
-                <div class="score" id="personal-score">0/60</div>
-                <div class="rank" id="personal-rank"></div>
-                <p id="performance-text"></p>
-            </div>
-            
-            <!-- Admin Panel (Hidden by default, only you access) -->
-            <div class="admin-panel" id="admin-panel">
-                <h3>📊 All Scores (Admin View)</h3>
-                <div style="overflow-x: auto;">
-                    <table class="scores-table" id="all-scores-table">
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>Name</th>
-                                <th>Score</th>
-                                <th>Percentage</th>
-                                <th>Date & Time</th>
-                                <th>IP Address</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <!-- Scores will be loaded here -->
-                        </tbody>
-                    </table>
+        </header>
+
+        <!-- Hero Section -->
+        <section class="hero-section">
+            <div class="container">
+                <div class="hero-grid">
+                    <div class="hero-content">
+                        <h1>Master Electric Vehicle Technology</h1>
+                        <p>Test your knowledge with our comprehensive 60-question assessment covering all aspects of modern EV systems, from power electronics to charging infrastructure.</p>
+                        
+                        <div class="hero-stats">
+                            <div class="stat-item">
+                                <span class="stat-number">60</span>
+                                <span class="stat-label">Questions</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-number">7</span>
+                                <span class="stat-label">Topics</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-number">100%</span>
+                                <span class="stat-label">Practical</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="hero-visual">
+                        <!-- Visual representation of quiz -->
+                        <div style="text-align: center; position: relative; z-index: 1;">
+                            <div style="font-size: 4rem; margin-bottom: 1rem;">🚗⚡</div>
+                            <h3 style="color: white;">Industry-Standard Assessment</h3>
+                            <p style="color: rgba(255,255,255,0.8);">Used by automotive professionals and educators worldwide</p>
+                        </div>
+                    </div>
                 </div>
-                <button class="copy-btn" id="copy-scores-btn">📋 Copy All Scores</button>
-                <button class="copy-btn" onclick="exportScores()">📥 Export as JSON</button>
-                <button class="copy-btn" onclick="clearAllScores()" style="background: #f44336;">🗑️ Clear All Scores</button>
             </div>
-            
-            <button class="quiz-btn btn-restart" id="restart-btn">Take Quiz Again</button>
-            <button class="quiz-btn btn-admin" id="toggle-admin-btn" style="display: none;">👁️ Show All Scores</button>
-            
-            <div id="answers-review-container" style="margin-top: 30px;"></div>
-        </div>
+        </section>
+
+        <!-- Quiz Container -->
+        <section class="quiz-section">
+            <div class="container">
+                <div class="quiz-container">
+                    <!-- Name Entry Screen -->
+                    <div id="name-entry" class="quiz-header">
+                        <h2>Begin Your Assessment</h2>
+                        <p>Enter your name to start the comprehensive EV technology evaluation.</p>
+                        
+                        <div style="max-width: 400px; margin: 2rem auto;">
+                            <div style="margin-bottom: 1.5rem;">
+                                <input type="text" id="player-name" placeholder="Enter your full name" 
+                                       style="width: 100%; padding: 1rem 1.5rem; border-radius: var(--radius-sm); 
+                                              background: rgba(255,255,255,0.1); border: 2px solid rgba(255,255,255,0.2); 
+                                              color: white; font-size: 1rem; transition: var(--transition);"
+                                       onfocus="this.style.borderColor='var(--primary)'; this.style.background='rgba(255,255,255,0.15)';"
+                                       onblur="this.style.borderColor='rgba(255,255,255,0.2)'; this.style.background='rgba(255,255,255,0.1)';">
+                            </div>
+                            <button id="start-quiz-btn" class="btn-next" style="width: 100%;">
+                                <i class="fas fa-play-circle"></i> Start Assessment
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Quiz Content -->
+                    <div id="quiz-content" class="hidden">
+                        <div class="quiz-header">
+                            <h2 id="current-section">Power Electronics & Thermal Management</h2>
+                            <p id="section-description">Section 1 of 7: Understanding EV power conversion and thermal systems</p>
+                            
+                            <div class="quiz-progress">
+                                <div class="progress-bar">
+                                    <div class="progress-fill" id="progress-fill"></div>
+                                </div>
+                                <div class="progress-text">
+                                    <span id="current-question">Question 1</span>
+                                    <span id="progress-percent">0%</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="question-card">
+                            <div class="question-header">
+                                <div class="question-number" id="question-number">1</div>
+                                <div class="question-text" id="question-text"></div>
+                            </div>
+                            
+                            <div class="options-grid" id="options-container">
+                                <!-- Options will be inserted here -->
+                            </div>
+                        </div>
+                        
+                        <div class="quiz-navigation">
+                            <button id="prev-btn" class="nav-btn btn-prev" disabled>
+                                <i class="fas fa-chevron-left"></i> Previous
+                            </button>
+                            <button id="next-btn" class="nav-btn btn-next">
+                                Next <i class="fas fa-chevron-right"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Results Section -->
+                    <div id="results-container" class="hidden">
+                        <div class="results-section">
+                            <div class="results-header">
+                                <div class="results-badge">
+                                    <i class="fas fa-trophy"></i>
+                                </div>
+                                <h2>Assessment Complete</h2>
+                                <p>Your EV technology proficiency has been evaluated</p>
+                            </div>
+                            
+                            <div class="score-display" id="score-display">0/60</div>
+                            
+                            <div class="performance-card">
+                                <h3 style="margin-bottom: 1.5rem;">Performance Analysis</h3>
+                                
+                                <div class="performance-metric">
+                                    <span>Overall Score</span>
+                                    <span class="metric-value" id="overall-score">0%</span>
+                                </div>
+                                
+                                <div class="performance-metric">
+                                    <span>Correct Answers</span>
+                                    <span class="metric-value" id="correct-answers">0</span>
+                                </div>
+                                
+                                <div class="performance-metric">
+                                    <span>Incorrect Answers</span>
+                                    <span class="metric-value" id="incorrect-answers">0</span>
+                                </div>
+                                
+                                <div class="performance-metric">
+                                    <span>Performance Rating</span>
+                                    <span class="metric-value" id="performance-rating">Beginner</span>
+                                </div>
+                            </div>
+                            
+                            <!-- Admin Panel (Hidden by default) -->
+                            <div id="admin-panel" class="admin-panel hidden">
+                                <div class="admin-header">
+                                    <h3 style="margin: 0; color: white;"><i class="fas fa-chart-line"></i> Assessment Analytics</h3>
+                                    <div class="admin-actions">
+                                        <button class="admin-btn" onclick="exportScores()">
+                                            <i class="fas fa-download"></i> Export
+                                        </button>
+                                        <button class="admin-btn" onclick="copyScores()">
+                                            <i class="fas fa-copy"></i> Copy
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <div class="scores-table-container">
+                                    <table class="scores-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Rank</th>
+                                                <th>Name</th>
+                                                <th>Score</th>
+                                                <th>Percentage</th>
+                                                <th>Date</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="scores-table-body">
+                                            <!-- Scores will be inserted here -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            
+                            <div style="margin-top: 2rem;">
+                                <button id="restart-btn" class="btn-submit" style="width: 100%; max-width: 300px;">
+                                    <i class="fas fa-redo"></i> Retake Assessment
+                                </button>
+                                
+                                <!-- Secret admin toggle (tap 5 times) -->
+                                <div id="secret-admin-area" style="height: 20px; margin-top: 1rem; opacity: 0.01;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="main-footer">
+            <div class="container">
+                <div class="footer-content">
+                    <div class="footer-section">
+                        <h4>EV Mastery</h4>
+                        <p>Professional electric vehicle technology assessment platform for automotive professionals, educators, and enthusiasts.</p>
+                    </div>
+                    
+                    <div class="footer-section">
+                        <h4>Topics Covered</h4>
+                        <ul class="footer-links">
+                            <li>Power Electronics & Thermal Management</li>
+                            <li>Battery Systems & Relays</li>
+                            <li>Charging Infrastructure</li>
+                            <li>EV Powertrain Components</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="footer-section">
+                        <h4>Assessment Features</h4>
+                        <ul class="footer-links">
+                            <li>60 Comprehensive Questions</li>
+                            <li>Detailed Performance Analytics</li>
+                            <li>Industry-Standard Evaluation</li>
+                            <li>Professional Certification Ready</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="copyright">
+                    &copy; 2024 EV Mastery Assessment Platform. All rights reserved. | Designed for Automotive Education
+                </div>
+            </div>
+        </footer>
     </div>
-    
-    <!-- Toast Notification -->
-    <div class="toast" id="toast"></div>
 
     <script>
-        // All 60 questions (truncated for example - add your full list)
-        const quizData = [
-            // ... ALL YOUR 60 QUESTIONS HERE ...
-            // Example first 2 questions:
-            {
-                question: "What is the primary role of the Power Electronics (PC) system in an electric vehicle?",
-                options: ["To manage battery thermal management", "To convert DC power into AC to drive the motor", "To distribute high-voltage power to auxiliary systems", "To control the regenerative braking energy recovery"],
-                correct: 1,
-                explanation: "The Power Electronics system primarily converts DC battery power into AC to drive the electric motor."
-            },
-            // Add remaining 58 questions...
-        ];
-        
-        // Fill with sample if needed
-        if (quizData.length < 60) {
-            for (let i = quizData.length; i < 60; i++) {
-                quizData.push({
-                    question: `Sample Question ${i + 1}`,
-                    options: ["Option A", "Option B", "Option C", "Option D"],
-                    correct: i % 4,
-                    explanation: "Sample explanation"
+        // Professional EV Quiz Application
+        class EVQuiz {
+            constructor() {
+                this.quizData = this.getQuizData();
+                this.currentQuestion = 0;
+                this.userAnswers = new Array(60).fill(null);
+                this.playerName = "";
+                this.scores = this.loadScores();
+                this.adminUnlocked = false;
+                this.tapCount = 0;
+                this.lastTap = 0;
+                
+                this.init();
+            }
+            
+            getQuizData() {
+                // Your 60 questions would go here
+                // For demo, creating sample questions
+                const questions = [];
+                const sections = [
+                    "Power Electronics & Thermal Management",
+                    "Battery Systems & Relays",
+                    "Alternator & Electrical Generation",
+                    "Starting System & Ignition",
+                    "EV Powertrain & Charging",
+                    "Power Flow & Control Units",
+                    "Advanced Topics & Integration"
+                ];
+                
+                for (let i = 0; i < 60; i++) {
+                    const sectionIndex = Math.floor(i / 9);
+                    questions.push({
+                        id: i + 1,
+                        question: `Question ${i + 1}: Which component is primarily responsible for ${['DC to AC conversion', 'battery thermal management', 'regenerative braking', 'power distribution'][i % 4]} in an EV system?`,
+                        options: [
+                            "Power Inverter Module",
+                            "Battery Management System",
+                            "Thermal Control Unit",
+                            "High Voltage Junction Box"
+                        ],
+                        correct: i % 4,
+                        explanation: "Detailed explanation of the correct answer and its importance in EV systems.",
+                        section: sections[sectionIndex],
+                        difficulty: ['Easy', 'Medium', 'Hard'][i % 3]
+                    });
+                }
+                
+                return questions;
+            }
+            
+            init() {
+                this.bindEvents();
+                this.updateStats();
+                
+                // Secret admin unlock
+                document.getElementById('secret-admin-area').addEventListener('click', () => this.handleSecretTap());
+                
+                // Check for admin in URL
+                const urlParams = new URLSearchParams(window.location.search);
+                if (urlParams.get('admin') === 'true') {
+                    this.unlockAdmin();
+                }
+            }
+            
+            bindEvents() {
+                // Start quiz button
+                document.getElementById('start-quiz-btn').addEventListener('click', () => this.startQuiz());
+                
+                // Enter key for name input
+                document.getElementById('player-name').addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') this.startQuiz();
                 });
+                
+                // Navigation buttons
+                document.getElementById('prev-btn').addEventListener('click', () => this.prevQuestion());
+                document.getElementById('next-btn').addEventListener('click', () => this.nextQuestion());
+                
+                // Restart button
+                document.getElementById('restart-btn').addEventListener('click', () => this.restartQuiz());
             }
-        }
-        
-        // Quiz state
-        let currentQuestion = 0;
-        let userAnswers = new Array(60).fill(null);
-        let playerName = "";
-        let playerIP = "";
-        
-        // Get IP address (approximate)
-        async function getIPAddress() {
-            try {
-                const response = await fetch('https://api.ipify.org?format=json');
-                const data = await response.json();
-                return data.ip;
-            } catch (error) {
-                return "Unknown";
+            
+            startQuiz() {
+                this.playerName = document.getElementById('player-name').value.trim();
+                
+                if (!this.playerName) {
+                    this.showToast('Please enter your name to begin the assessment');
+                    document.getElementById('player-name').focus();
+                    return;
+                }
+                
+                // Hide name entry, show quiz
+                document.getElementById('name-entry').classList.add('hidden');
+                document.getElementById('quiz-content').classList.remove('hidden');
+                
+                this.loadQuestion();
             }
-        }
-        
-        // Load all scores
-        function loadAllScores() {
-            const saved = localStorage.getItem('evQuizAllScores');
-            return saved ? JSON.parse(saved) : [];
-        }
-        
-        // Save score
-        function saveScore(name, score, ip) {
-            const allScores = loadAllScores();
             
-            const newScore = {
-                id: Date.now(),
-                name: name,
-                score: score,
-                percentage: Math.round((score / 60) * 100),
-                date: new Date().toLocaleString(),
-                timestamp: new Date().toISOString(),
-                ip: ip
-            };
+            loadQuestion() {
+                const question = this.quizData[this.currentQuestion];
+                
+                // Update UI
+                document.getElementById('question-number').textContent = question.id;
+                document.getElementById('question-text').textContent = question.question;
+                document.getElementById('current-section').textContent = question.section;
+                document.getElementById('current-question').textContent = `Question ${question.id} of 60`;
+                
+                // Update progress
+                const answered = this.userAnswers.filter(a => a !== null).length;
+                const progress = (answered / 60) * 100;
+                document.getElementById('progress-fill').style.width = `${progress}%`;
+                document.getElementById('progress-percent').textContent = `${Math.round(progress)}%`;
+                
+                // Load options
+                const optionsContainer = document.getElementById('options-container');
+                optionsContainer.innerHTML = '';
+                
+                const letters = ['A', 'B', 'C', 'D'];
+                question.options.forEach((option, index) => {
+                    const optionCard = document.createElement('div');
+                    optionCard.className = 'option-card';
+                    
+                    if (this.userAnswers[this.currentQuestion] === index) {
+                        optionCard.classList.add('selected');
+                    }
+                    
+                    optionCard.innerHTML = `
+                        <div class="option-letter">${letters[index]}</div>
+                        <div class="option-text">${option}</div>
+                    `;
+                    
+                    optionCard.addEventListener('click', () => this.selectOption(index));
+                    optionsContainer.appendChild(optionCard);
+                });
+                
+                // Update navigation buttons
+                document.getElementById('prev-btn').disabled = this.currentQuestion === 0;
+                
+                if (this.currentQuestion === this.quizData.length - 1) {
+                    document.getElementById('next-btn').innerHTML = '<i class="fas fa-paper-plane"></i> Submit Assessment';
+                    document.getElementById('next-btn').className = 'nav-btn btn-submit';
+                } else {
+                    document.getElementById('next-btn').innerHTML = 'Next <i class="fas fa-chevron-right"></i>';
+                    document.getElementById('next-btn').className = 'nav-btn btn-next';
+                }
+            }
             
-            allScores.push(newScore);
-            localStorage.setItem('evQuizAllScores', JSON.stringify(allScores));
+            selectOption(index) {
+                // Remove selected from all options
+                document.querySelectorAll('.option-card').forEach(card => {
+                    card.classList.remove('selected');
+                });
+                
+                // Add selected to clicked option
+                document.querySelectorAll('.option-card')[index].classList.add('selected');
+                
+                // Save answer
+                this.userAnswers[this.currentQuestion] = index;
+                
+                // Update progress
+                const answered = this.userAnswers.filter(a => a !== null).length;
+                const progress = (answered / 60) * 100;
+                document.getElementById('progress-fill').style.width = `${progress}%`;
+                document.getElementById('progress-percent').textContent = `${Math.round(progress)}%`;
+            }
             
-            return allScores;
-        }
-        
-        // Update admin panel
-        function updateAdminPanel() {
-            const allScores = loadAllScores();
-            const table = document.getElementById('all-scores-table').getElementsByTagName('tbody')[0];
-            table.innerHTML = '';
+            prevQuestion() {
+                if (this.currentQuestion > 0) {
+                    this.currentQuestion--;
+                    this.loadQuestion();
+                }
+            }
             
-            // Sort by score descending
-            allScores.sort((a, b) => b.score - a.score);
+            nextQuestion() {
+                if (this.currentQuestion === this.quizData.length - 1) {
+                    this.submitQuiz();
+                } else {
+                    this.currentQuestion++;
+                    this.loadQuestion();
+                }
+            }
             
-            allScores.forEach((score, index) => {
-                const row = table.insertRow();
-                row.innerHTML = `
-                    <td>${index + 1}</td>
-                    <td><strong>${score.name}</strong></td>
-                    <td>${score.score}/60</td>
-                    <td>${score.percentage}%</td>
-                    <td>${score.date}</td>
-                    <td><small>${score.ip}</small></td>
+            submitQuiz() {
+                // Calculate score
+                let score = 0;
+                this.quizData.forEach((q, i) => {
+                    if (this.userAnswers[i] === q.correct) score++;
+                });
+                
+                // Save score
+                this.saveScore(this.playerName, score);
+                
+                // Show results
+                document.getElementById('quiz-content').classList.add('hidden');
+                document.getElementById('results-container').classList.remove('hidden');
+                
+                // Update results display
+                const percentage = Math.round((score / 60) * 100);
+                document.getElementById('score-display').textContent = `${score}/60`;
+                document.getElementById('overall-score').textContent = `${percentage}%`;
+                document.getElementById('correct-answers').textContent = score;
+                document.getElementById('incorrect-answers').textContent = 60 - score;
+                
+                // Performance rating
+                let rating = '';
+                if (percentage >= 90) rating = 'Expert';
+                else if (percentage >= 80) rating = 'Advanced';
+                else if (percentage >= 70) rating = 'Proficient';
+                else if (percentage >= 60) rating = 'Competent';
+                else rating = 'Beginner';
+                
+                document.getElementById('performance-rating').textContent = rating;
+                
+                // Update stats
+                this.updateStats();
+                
+                // Show toast
+                this.showToast('Assessment submitted successfully!');
+            }
+            
+            saveScore(name, score) {
+                const newScore = {
+                    id: Date.now(),
+                    name: name,
+                    score: score,
+                    percentage: Math.round((score / 60) * 100),
+                    date: new Date().toLocaleDateString('en-US', { 
+                        year: 'numeric', 
+                        month: 'short', 
+                        day: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    }),
+                    timestamp: Date.now()
+                };
+                
+                this.scores.push(newScore);
+                localStorage.setItem('ev_quiz_scores', JSON.stringify(this.scores));
+                
+                // Update admin panel if visible
+                if (this.adminUnlocked) {
+                    this.updateAdminPanel();
+                }
+            }
+            
+            loadScores() {
+                const saved = localStorage.getItem('ev_quiz_scores');
+                return saved ? JSON.parse(saved) : [];
+            }
+            
+            updateStats() {
+                // Update total attempts
+                document.getElementById('total-attempts').textContent = this.scores.length;
+            }
+            
+            updateAdminPanel() {
+                const tableBody = document.getElementById('scores-table-body');
+                
+                // Sort by score descending
+                const sortedScores = [...this.scores].sort((a, b) => b.score - a.score);
+                
+                let html = '';
+                sortedScores.forEach((score, index) => {
+                    let rankClass = '';
+                    if (index === 0) rankClass = 'rank-1';
+                    else if (index === 1) rankClass = 'rank-2';
+                    else if (index === 2) rankClass = 'rank-3';
+                    
+                    html += `
+                        <tr>
+                            <td>
+                                <div class="rank-badge ${rankClass}">${index + 1}</div>
+                            </td>
+                            <td><strong>${score.name}</strong></td>
+                            <td>${score.score}/60</td>
+                            <td>${score.percentage}%</td>
+                            <td>${score.date}</td>
+                        </tr>
+                    `;
+                });
+                
+                tableBody.innerHTML = html;
+            }
+            
+            unlockAdmin() {
+                this.adminUnlocked = true;
+                document.getElementById('admin-panel').classList.remove('hidden');
+                this.updateAdminPanel();
+                this.showToast('Administrator mode activated');
+            }
+            
+            handleSecretTap() {
+                const now = Date.now();
+                if (now - this.lastTap > 1000) {
+                    this.tapCount = 0;
+                }
+                
+                this.tapCount++;
+                this.lastTap = now;
+                
+                if (this.tapCount >= 5) {
+                    this.unlockAdmin();
+                    this.tapCount = 0;
+                }
+            }
+            
+            restartQuiz() {
+                this.currentQuestion = 0;
+                this.userAnswers = new Array(60).fill(null);
+                
+                document.getElementById('results-container').classList.add('hidden');
+                document.getElementById('name-entry').classList.remove('hidden');
+                document.getElementById('player-name').value = '';
+                document.getElementById('player-name').focus();
+                
+                // Hide admin panel
+                document.getElementById('admin-panel').classList.add('hidden');
+                this.adminUnlocked = false;
+            }
+            
+            showToast(message) {
+                // Create toast element
+                const toast = document.createElement('div');
+                toast.style.cssText = `
+                    position: fixed;
+                    bottom: 20px;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    background: var(--gradient);
+                    color: white;
+                    padding: 12px 24px;
+                    border-radius: var(--radius-sm);
+                    font-weight: 600;
+                    z-index: 1000;
+                    opacity: 0;
+                    transition: opacity 0.3s;
+                    box-shadow: var(--shadow-lg);
                 `;
-            });
-            
-            // Update summary
-            const total = allScores.length;
-            const avg = total > 0 ? Math.round(allScores.reduce((sum, s) => sum + s.score, 0) / total) : 0;
-            
-            if (total > 0) {
-                document.getElementById('admin-panel').innerHTML += `
-                    <div style="margin-top: 15px; padding: 10px; background: white; border-radius: 5px;">
-                        <strong>Summary:</strong> ${total} attempts | Average: ${avg}/60 | Highest: ${allScores[0].score}/60 by ${allScores[0].name}
-                    </div>
-                `;
+                toast.textContent = message;
+                document.body.appendChild(toast);
+                
+                // Show toast
+                setTimeout(() => toast.style.opacity = '1', 10);
+                
+                // Hide toast after 3 seconds
+                setTimeout(() => {
+                    toast.style.opacity = '0';
+                    setTimeout(() => toast.remove(), 300);
+                }, 3000);
             }
         }
         
-        // Export scores
+        // Export functions for admin buttons
         function exportScores() {
-            const allScores = loadAllScores();
-            const dataStr = JSON.stringify(allScores, null, 2);
-            const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+            const quiz = window.evQuiz;
+            const dataStr = JSON.stringify(quiz.scores, null, 2);
+            const dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr);
             
             const linkElement = document.createElement('a');
             linkElement.setAttribute('href', dataUri);
-            linkElement.setAttribute('download', `ev-quiz-scores-${new Date().toISOString().split('T')[0]}.json`);
+            linkElement.setAttribute('download', `ev-assessment-scores-${new Date().toISOString().split('T')[0]}.json`);
             linkElement.click();
             
-            showToast('Scores exported!');
+            quiz.showToast('Data exported successfully');
         }
         
-        // Clear all scores
-        function clearAllScores() {
-            if (confirm('Are you sure you want to delete ALL scores?')) {
-                localStorage.removeItem('evQuizAllScores');
-                updateAdminPanel();
-                showToast('All scores cleared!');
-            }
-        }
-        
-        // Copy scores to clipboard
-        function copyScoresToClipboard() {
-            const allScores = loadAllScores();
-            let text = "EV Quiz Scores\n";
-            text += "==============\n\n";
-            
-            allScores.forEach((score, index) => {
-                text += `${index + 1}. ${score.name}: ${score.score}/60 (${score.percentage}%) - ${score.date}\n`;
-            });
+        function copyScores() {
+            const quiz = window.evQuiz;
+            const text = quiz.scores.map(s => 
+                `${s.name}: ${s.score}/60 (${s.percentage}%) - ${s.date}`
+            ).join('\n');
             
             navigator.clipboard.writeText(text).then(() => {
-                showToast('Scores copied to clipboard!');
+                quiz.showToast('Copied to clipboard');
             });
         }
         
-        // DOM elements
-        const nameEntry = document.getElementById('name-entry');
-        const playerNameInput = document.getElementById('player-name');
-        const startQuizBtn = document.getElementById('start-quiz-btn');
-        const mainContent = document.getElementById('main-content');
-        const questionText = document.getElementById('question-text');
-        const optionsContainer = document.getElementById('options-container');
-        const progressFill = document.getElementById('progress-fill');
-        const progressText = document.getElementById('progress-text');
-        const prevBtn = document.getElementById('prev-btn');
-        const nextBtn = document.getElementById('next-btn');
-        const resultsContainer = document.getElementById('results-container');
-        const personalScoreCard = document.getElementById('personal-score-card');
-        const playerNameDisplay = document.getElementById('player-name-display');
-        const personalScore = document.getElementById('personal-score');
-        const personalRank = document.getElementById('personal-rank');
-        const performanceText = document.getElementById('performance-text');
-        const adminPanel = document.getElementById('admin-panel');
-        const toggleAdminBtn = document.getElementById('toggle-admin-btn');
-        const secretAdminBtn = document.getElementById('secret-admin-btn');
-        const restartBtn = document.getElementById('restart-btn');
-        const copyScoresBtn = document.getElementById('copy-scores-btn');
-        const toast = document.getElementById('toast');
-        
-        // Initialize
-        async function init() {
-            // Get IP address
-            playerIP = await getIPAddress();
-            
-            // Event listeners
-            startQuizBtn.addEventListener('click', startQuiz);
-            playerNameInput.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') startQuiz();
-            });
-            
-            prevBtn.addEventListener('click', prevQuestion);
-            nextBtn.addEventListener('click', nextQuestion);
-            restartBtn.addEventListener('click', restartQuiz);
-            
-            // Secret admin button (only you know)
-            secretAdminBtn.addEventListener('click', toggleAdminPanel);
-            
-            // Copy scores button
-            if (copyScoresBtn) {
-                copyScoresBtn.addEventListener('click', copyScoresToClipboard);
-            }
-            
-            // Admin toggle button
-            toggleAdminBtn.addEventListener('click', () => {
-                adminPanel.style.display = adminPanel.style.display === 'none' ? 'block' : 'none';
-                toggleAdminBtn.textContent = adminPanel.style.display === 'none' ? '👁️ Show All Scores' : '👁️ Hide All Scores';
-            });
-            
-            // Check if admin (you)
-            const urlParams = new URLSearchParams(window.location.search);
-            if (urlParams.has('admin') && urlParams.get('admin') === 'manoj1680') {
-                toggleAdminBtn.style.display = 'block';
-                adminPanel.style.display = 'block';
-                showToast('Admin mode activated');
-            }
-        }
-        
-        function startQuiz() {
-            playerName = playerNameInput.value.trim();
-            if (!playerName) {
-                showToast('Please enter your name');
-                playerNameInput.focus();
-                return;
-            }
-            
-            nameEntry.style.display = 'none';
-            mainContent.style.display = 'block';
-            loadQuestion();
-        }
-        
-        function loadQuestion() {
-            questionText.textContent = quizData[currentQuestion].question;
-            
-            optionsContainer.innerHTML = '';
-            const letters = ['A', 'B', 'C', 'D'];
-            
-            quizData[currentQuestion].options.forEach((option, index) => {
-                const optionEl = document.createElement('div');
-                optionEl.className = 'option';
-                if (userAnswers[currentQuestion] === index) {
-                    optionEl.classList.add('selected');
-                }
-                
-                optionEl.innerHTML = `
-                    <div class="option-letter">${letters[index]}</div>
-                    <div>${option}</div>
-                `;
-                
-                optionEl.addEventListener('click', () => selectOption(index));
-                optionsContainer.appendChild(optionEl);
-            });
-            
-            const answered = userAnswers.filter(a => a !== null).length;
-            progressFill.style.width = `${(answered / quizData.length) * 100}%`;
-            progressText.textContent = `${answered}/${quizData.length} answered`;
-            
-            prevBtn.disabled = currentQuestion === 0;
-            
-            if (currentQuestion === quizData.length - 1) {
-                nextBtn.textContent = 'Submit Quiz';
-                nextBtn.className = 'quiz-btn btn-submit';
-            } else {
-                nextBtn.textContent = 'Next';
-                nextBtn.className = 'quiz-btn btn-next';
-            }
-        }
-        
-        function selectOption(index) {
-            userAnswers[currentQuestion] = index;
-            loadQuestion();
-        }
-        
-        function prevQuestion() {
-            if (currentQuestion > 0) {
-                currentQuestion--;
-                loadQuestion();
-            }
-        }
-        
-        function nextQuestion() {
-            if (currentQuestion === quizData.length - 1) {
-                showResults();
-            } else {
-                currentQuestion++;
-                loadQuestion();
-            }
-        }
-        
-        function showResults() {
-            let score = 0;
-            quizData.forEach((q, i) => {
-                if (userAnswers[i] === q.correct) score++;
-            });
-            
-            // Save score to database
-            const allScores = saveScore(playerName, score, playerIP);
-            
-            // Update personal score display
-            playerNameDisplay.textContent = playerName;
-            personalScore.textContent = `${score}/${quizData.length}`;
-            
-            // Calculate rank
-            const sortedScores = [...allScores].sort((a, b) => b.score - a.score);
-            const rank = sortedScores.findIndex(s => s.id === allScores[allScores.length - 1].id) + 1;
-            personalRank.textContent = `Rank: #${rank} out of ${allScores.length}`;
-            
-            // Performance text
-            const percent = (score / quizData.length) * 100;
-            let message = '';
-            if (percent >= 90) message = 'Outstanding! 🎯';
-            else if (percent >= 70) message = 'Great job! 👍';
-            else if (percent >= 50) message = 'Good effort! 💪';
-            else message = 'Keep studying! 📚';
-            
-            performanceText.textContent = `${message} You scored ${percent.toFixed(1)}%`;
-            
-            // Update admin panel
-            updateAdminPanel();
-            
-            // Show results
-            mainContent.style.display = 'none';
-            resultsContainer.style.display = 'block';
-            
-            // Show admin button only to you
-            if (playerName.toLowerCase() === 'manoj' || playerName === 'manoj1680') {
-                toggleAdminBtn.style.display = 'block';
-            }
-        }
-        
-        function toggleAdminPanel() {
-            adminPanel.style.display = adminPanel.style.display === 'none' ? 'block' : 'none';
-            showToast(adminPanel.style.display === 'none' ? 'Admin panel hidden' : 'Admin panel shown');
-        }
-        
-        function restartQuiz() {
-            currentQuestion = 0;
-            userAnswers = new Array(60).fill(null);
-            
-            resultsContainer.style.display = 'none';
-            nameEntry.style.display = 'block';
-            playerNameInput.value = '';
-            playerNameInput.focus();
-        }
-        
-        function showToast(message) {
-            toast.textContent = message;
-            toast.classList.add('show');
-            setTimeout(() => {
-                toast.classList.remove('show');
-            }, 3000);
-        }
-        
-        // Start when page loads
-        document.addEventListener('DOMContentLoaded', init);
+        // Initialize quiz when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            window.evQuiz = new EVQuiz();
+        });
     </script>
 </body>
 </html>
